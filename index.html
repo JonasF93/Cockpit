@@ -113,8 +113,8 @@ h2{font-size:21px;font-weight:700;margin:0 0 10px}
 .row-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 
 label{display:block;font-size:14px;color:var(--muted);font-weight:600;margin:0 0 14px}
-input[type=text],input[type=date],select,textarea{display:block;width:100%;margin-top:6px;font:inherit;font-size:16px;font-weight:400;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-input[type=date]{min-height:44px;-webkit-appearance:none;appearance:none}
+input[type=text],input[type=date],input[type=time],select,textarea{display:block;width:100%;margin-top:6px;font:inherit;font-size:16px;font-weight:400;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input[type=date],input[type=time]{min-height:44px;-webkit-appearance:none;appearance:none}
 textarea{resize:vertical}
 fieldset{border:0;padding:0;margin:0 0 14px}
 legend{font-size:14px;color:var(--muted);font-weight:600;margin-bottom:6px;padding:0}
@@ -130,7 +130,7 @@ legend{font-size:14px;color:var(--muted);font-weight:600;margin-bottom:6px;paddi
 .sheet-wrap[hidden]{display:none}
 .sheet{background:var(--panel);width:100%;max-width:680px;max-height:calc(100% - env(safe-area-inset-top,0px) - 20px);overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:18px 18px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px));animation:up .22s ease-out}
 @keyframes up{from{transform:translateY(28px);opacity:.5}}
-.sheet input[type=text],.sheet input[type=date],.sheet select,.sheet textarea{background:var(--bg)}
+.sheet input[type=text],.sheet input[type=date],.sheet input[type=time],.sheet select,.sheet textarea{background:var(--bg)}
 .sheet-acts{display:flex;gap:10px;margin-top:6px}
 .sheet-acts .btn{flex:1}
 .danger{display:flex;justify-content:space-between;gap:10px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
@@ -393,6 +393,7 @@ function openEditor(id,prefill,fromNote){
     '<label>Nächster Meilenstein<input type="date" id="f-due" value="'+esc(t.due||'')+'"></label>'+
     '<label>Deadline (Endtermin)<input type="date" id="f-deadline" value="'+esc(t.deadline||'')+'"></label>'+
     '<label>Erinnern<select id="f-remind">'+REMIND.map(r=>'<option value="'+r[0]+'"'+((t.remind??3)===r[0]?' selected':'')+'>'+r[1]+'</option>').join('')+'</select></label>'+
+    '<label>Uhrzeit der Erinnerung<input type="time" id="f-rtime" value="'+esc(t.remindTime||'09:00')+'"></label>'+
     '<div class="calbox"><button type="button" class="btn sm" data-act="cal">In iPhone-Kalender eintragen</button><label class="check"><input type="checkbox" id="f-calname"> Thementitel im Kalender anzeigen</label><p class="im">Ohne Haken steht im Kalender nur „Frist im Themen-Cockpit“. So erscheint kein Inhalt im Kalender, auch wenn er synchronisiert wird.</p></div>'+
     '<label>Wartet auf<select id="f-wait">'+waitOpts(t.waiting||'none')+'</select></label>'+
     '<label>Details dazu<input type="text" id="f-waitnote" value="'+esc(t.waitNote)+'" placeholder="z. B. Budgetfreigabe, Rückmeldung Dienstleister"></label>'+
@@ -406,7 +407,7 @@ function saveTopic(){
   const title=val('f-title').trim();
   if(!title){toast('Gib dem Thema einen Titel.');$('#f-title').focus();return}
   const on=document.querySelector('#f-status .on');
-  const d={title:title,team:val('f-team'),goal:val('f-goal').trim(),status:on?on.dataset.val:'g',next:val('f-next').trim(),due:val('f-due'),waiting:val('f-wait'),waitNote:val('f-waitnote').trim(),notes:val('f-notes'),owner:val('f-owner').trim(),deadline:val('f-deadline'),remind:+val('f-remind')};
+  const d={title:title,team:val('f-team'),goal:val('f-goal').trim(),status:on?on.dataset.val:'g',next:val('f-next').trim(),due:val('f-due'),waiting:val('f-wait'),waitNote:val('f-waitnote').trim(),notes:val('f-notes'),owner:val('f-owner').trim(),deadline:val('f-deadline'),remind:+val('f-remind'),remindTime:val('f-rtime')||'09:00'};
   const now=Date.now();
   if(edit&&edit.id){
     const t=S.topics.find(x=>x.id===edit.id);
@@ -433,15 +434,16 @@ function rvFinishIfDone(){if(rv&&rv.i>=rv.q.length){S.lastReview=Date.now();save
 
 /* ---------- Kalender ---------- */
 function icsEsc(s){return String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n')}
-function makeIcs(id,summary,iso,remind){
+function makeIcs(id,summary,iso,remind,time){
   const d=iso.replace(/-/g,'');
   const n=new Date(iso+'T00:00:00');n.setDate(n.getDate()+1);
   const e=n.getFullYear()+String(n.getMonth()+1).padStart(2,'0')+String(n.getDate()).padStart(2,'0');
   const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
   const alarm=t=>['BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+icsEsc(summary),'TRIGGER:'+t,'END:VALARM'];
   const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Themen-Cockpit//DE','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT','UID:'+id+'@themen-cockpit','DTSTAMP:'+stamp,'DTSTART;VALUE=DATE:'+d,'DTEND;VALUE=DATE:'+e,'SUMMARY:'+icsEsc(summary),'TRANSP:TRANSPARENT'];
-  if(remind>0)L.push(...alarm('-P'+(remind-1)+'DT15H'));
-  L.push(...alarm('PT9H'));
+  const p=(time||'09:00').split(':');const mins=Math.min(1439,Math.max(0,(+p[0]||0)*60+(+p[1]||0)));
+  if(remind>0)L.push(...alarm('-PT'+(remind*1440-mins)+'M'));
+  L.push(...alarm('PT'+mins+'M'));
   L.push('END:VEVENT','END:VCALENDAR');
   return L.join('\r\n')+'\r\n';
 }
@@ -523,7 +525,7 @@ const A={
     if(window.self!==window.top){toast('Kalendereinträge funktionieren nur in der Version auf deinem Home-Bildschirm.');return}
     const title=val('f-title').trim()||'Thema';
     const cb=document.getElementById('f-calname');
-    const ics=makeIcs((edit&&edit.id)||uid(),cb&&cb.checked?'Frist: '+title:'Frist im Themen-Cockpit',dl,+val('f-remind'));
+    const ics=makeIcs((edit&&edit.id)||uid(),cb&&cb.checked?'Frist: '+title:'Frist im Themen-Cockpit',dl,+val('f-remind'),val('f-rtime'));
     try{const u=URL.createObjectURL(new Blob([ics],{type:'text/calendar;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='frist.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),10000);toast('Kalendereintrag erstellt. Bestätige mit „Hinzufügen“.')}
     catch(e){toast('Der Kalendereintrag konnte nicht erstellt werden.')}
   },
