@@ -96,6 +96,14 @@ h2{font-size:21px;font-weight:700;margin:0 0 10px}
 .tag.stale{background:color-mix(in srgb,var(--y) 22%,transparent)}
 .tag.dead{background:color-mix(in srgb,var(--y) 32%,transparent);font-weight:600}
 .calbox{background:var(--soft);border-radius:12px;padding:12px;margin:0 0 14px}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 12px 10px;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
+.kpi b{display:block;font-family:"Barlow Semi Condensed","Arial Narrow",-apple-system,sans-serif;font-size:36px;font-weight:700;line-height:1.05}
+.kpi span{font-size:13px;color:var(--muted)}
+.kpi.r b{color:var(--r)}.kpi.f b{color:#9A7000}.kpi.m b{color:var(--accent)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kpi.f b{color:var(--y)}}
+:root[data-theme="dark"] .kpi.f b{color:var(--y)}
+.kpi.zero b{color:var(--muted)}
 .calbox .check{margin:10px 0 6px}
 .calbox p{margin:0}
 
@@ -193,7 +201,7 @@ const REMIND=[[0,'Am Tag der Deadline'],[1,'1 Tag vorher'],[3,'3 Tage vorher'],[
 const TITLES={lage:'Lage',themen:'Themen',inbox:'Inbox',review:'Review',daten:'Daten'};
 
 let S=load();
-let view='lage', teamFilter='Alle', personFilter='Alle', showArchived=false, rv=null, edit=null, pending=null;
+let view='lage', teamFilter='Alle', personFilter='Alle', kpiFilter=null, showArchived=false, rv=null, edit=null, pending=null;
 
 function blank(){return{topics:[],inbox:[],lastReview:null,lastExport:null,teams:DEFAULT_TEAMS.slice()}}
 function load(){
@@ -268,6 +276,7 @@ function offlineState(){
   if(navigator.serviceWorker.controller)return'Offline bereit: Die App startet auch ohne Internet.';
   return'Offline noch nicht eingerichtet. Öffne die App einmal mit Internet, schließe sie und starte sie neu.';
 }
+function kpiSets(a){return{r:a.filter(t=>t.status==='r'),fr:a.filter(t=>{const n=daysUntil(t.deadline);return n!==null&&n<=14}),me:a.filter(t=>t.waiting==='decision'||t.waiting==='promise')}}
 function storageWarn(){return storageOk?'':'<div class="warnbox"><strong>Speicher nicht verfügbar.</strong> Dieser Browser erlaubt kein dauerhaftes Speichern. Öffne die App über den Home-Bildschirm oder in Safari ohne privaten Modus.</div>'}
 
 /* ---------- Ansichten ---------- */
@@ -275,6 +284,7 @@ function vLage(){
   const a=active();
   let h=storageWarn();
   if(!a.length&&!S.inbox.length)return h+empty('Noch keine Themen','Lege dein erstes Thema an oder notiere kurz, was gerade ansteht. Einsortieren kannst du später. Eigene Teamnamen vergibst du unter „Daten“.','<button class="btn pri" data-act="new">Thema anlegen</button><button class="btn" data-act="quick">Notiz erfassen</button>');
+  if(a.length){const k=kpiSets(a);h+='<div class="kpis">'+[['r','r','kritisch'],['fr','f','Fristen'],['me','m','bei dir']].map(x=>'<button class="kpi '+x[1]+(k[x[0]].length?'':' zero')+'" data-act="kpi" data-k="'+x[0]+'" aria-label="'+k[x[0]].length+' '+x[2]+', Liste anzeigen"><b>'+k[x[0]].length+'</b><span>'+x[2]+'</span></button>').join('')+'</div>'}
   const rd=days(S.lastReview);
   if(a.length&&(rd===null||rd>=7))h+='<section class="notice"><div><strong>Wochen-Review fällig</strong><p>'+(rd===null?'Noch kein Review abgeschlossen.':'Letztes Review '+rel(S.lastReview)+'.')+' '+a.length+' Themen, etwa '+minutes(a.length)+' Minuten.</p></div><button class="btn pri" data-act="go" data-v="review">Starten</button></section>';
   if(S.inbox.length)h+='<button class="inbox-hint" data-act="go" data-v="inbox">'+S.inbox.length+(S.inbox.length===1?' Notiz wartet':' Notizen warten')+' in der Inbox aufs Einsortieren</button>';
@@ -301,6 +311,11 @@ function vLage(){
 }
 
 function vThemen(){
+  if(kpiFilter){
+    const lbl={r:'Kritische Themen',fr:'Fristen in den nächsten 14 Tagen',me:'Themen, die auf dich warten'}[kpiFilter];
+    const list=(kpiSets(active())[kpiFilter]||[]).slice().sort(kpiFilter==='fr'?(x,y)=>x.deadline.localeCompare(y.deadline):bySev);
+    return '<div class="row-actions"><h2 style="margin:0">'+lbl+'</h2><button class="link" data-act="kpiClear">Alle Themen</button></div>'+(list.length?'<div class="list">'+list.map(item).join('')+'</div>':'<p class="calm">In dieser Auswahl gibt es gerade keine Themen.</p>');
+  }
   const used=teamsUsed().filter(tm=>S.topics.some(t=>t.team===tm));
   let h='<div class="chips">'+['Alle'].concat(used).map(tm=>'<button class="chip'+(teamFilter===tm?' on':'')+'" data-act="chip" data-team="'+esc(tm)+'">'+esc(tm)+'</button>').join('')+'</div>';
   if(teamFilter!=='Alle'){const ps=[...new Set(S.topics.filter(t=>t.team===teamFilter&&t.owner).map(t=>t.owner))].sort((x,y)=>x.localeCompare(y,'de'));if(ps.length)h+='<div class="chips">'+['Alle'].concat(ps).map(p=>'<button class="chip sm'+(personFilter===p?' on':'')+'" data-act="pchip" data-p="'+esc(p)+'">'+(p==='Alle'?'Alle Personen':esc(p))+'</button>').join('')+'</div>'}
@@ -496,7 +511,9 @@ const A={
   addInbox:()=>{const t=val('cap').trim();if(!t){toast('Die Notiz ist leer.');return}S.inbox.push({id:uid(),text:t,at:Date.now()});save();render();toast('In Inbox abgelegt.')},
   new:()=>openEditor(null,{}),
   open:b=>openEditor(b.dataset.id),
-  team:b=>{teamFilter=b.dataset.team;personFilter='Alle';showArchived=false;go('themen')},
+  team:b=>{teamFilter=b.dataset.team;personFilter='Alle';kpiFilter=null;showArchived=false;go('themen')},
+  kpi:b=>{kpiFilter=b.dataset.k;showArchived=false;go('themen')},
+  kpiClear:()=>{kpiFilter=null;render()},
   chip:b=>{teamFilter=b.dataset.team;personFilter='Alle';render()},
   pchip:b=>{personFilter=b.dataset.p;render()},
   arch:()=>{showArchived=!showArchived;render()},
@@ -539,7 +556,7 @@ document.addEventListener('click',e=>{
   if(e.target===$('#sheet')){closeSheet();return}
   const b=e.target.closest('[data-act],[data-tab]');
   if(!b||b.disabled)return;
-  if(b.dataset.tab){if(b.dataset.tab!=='review'&&rv&&view==='review'){rvApply()}go(b.dataset.tab);return}
+  if(b.dataset.tab){if(b.dataset.tab!=='review'&&rv&&view==='review'){rvApply()}kpiFilter=null;go(b.dataset.tab);return}
   const f=A[b.dataset.act];if(f){e.preventDefault();f(b,e)}
 });
 document.addEventListener('change',e=>{
