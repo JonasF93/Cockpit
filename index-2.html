@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Themen">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Themen-Cockpit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0EC;--panel:#FFFFFF;--ink:#16232E;--muted:#5A6873;--line:#D5DBD7;
+  --accent:#0D6770;--accent-ink:#FFFFFF;--soft:#E1E7E4;
+  --g:#2E8857;--y:#CF9700;--r:#C2413A;--hdr:rgba(237,240,236,.9);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E151B;--panel:#17212A;--ink:#E3E9EC;--muted:#92A1AA;--line:#283640;
+    --accent:#4BB0B9;--accent-ink:#04181A;--soft:#1F2C35;
+    --g:#4DB07D;--y:#E3B53A;--r:#E46258;--hdr:rgba(14,21,27,.9);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E151B;--panel:#17212A;--ink:#E3E9EC;--muted:#92A1AA;--line:#283640;
+  --accent:#4BB0B9;--accent-ink:#04181A;--soft:#1F2C35;
+  --g:#4DB07D;--y:#E3B53A;--r:#E46258;--hdr:rgba(14,21,27,.9);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--hdr);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+h1,h2,.mteam,.big,.btn,.tabs button,.chip,.segb{font-family:"Barlow Semi Condensed","Arial Narrow",-apple-system,BlinkMacSystemFont,sans-serif}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--hdr);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top-in{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
+h1{margin:0;font-size:30px;font-weight:700;letter-spacing:-.01em}
+main{max-width:680px;margin:0 auto;padding:18px 16px 84px}
+h2{font-size:21px;font-weight:700;margin:0 0 10px}
+.block{margin:0 0 28px}
+.block p{margin:0 0 10px}
+
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:center;background:var(--panel);border-top:1px solid var(--line);padding:2px 6px calc(2px + env(safe-area-inset-bottom,0px))}
+.tabs button{flex:1;max-width:136px;border:0;background:none;color:var(--muted);font-size:16px;font-weight:600;padding:13px 2px 11px;position:relative;cursor:pointer}
+.tabs button.on{color:var(--accent)}
+.tabs button.on::before{content:"";position:absolute;top:0;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
+.badge{display:inline-block;min-width:18px;padding:0 5px;margin-left:3px;border-radius:9px;background:var(--r);color:#fff;font:600 12px/18px -apple-system,BlinkMacSystemFont,sans-serif;vertical-align:1px}
+
+.btn{appearance:none;-webkit-appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:18px;font-weight:600;padding:10px 16px;border-radius:12px;cursor:pointer;min-height:44px;text-align:center}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent}
+.btn.red{color:var(--r)}
+.btn.sm{font-size:16px;padding:6px 12px;min-height:38px;border-radius:10px}
+.btn.wide{width:100%;display:block}
+.btn:disabled{opacity:.4;cursor:default}
+.link{border:0;background:none;color:var(--accent);font:inherit;font-weight:600;padding:10px 0;cursor:pointer}
+
+.matrix{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.mrow{display:grid;grid-template-columns:128px 1fr;align-items:stretch;border-top:1px solid var(--line);min-height:56px}
+.mrow:first-child{border-top:0}
+.mteam{border:0;border-right:1px solid var(--line);background:none;color:var(--ink);text-align:left;font-size:18px;font-weight:600;padding:12px 10px 12px 14px;display:flex;justify-content:space-between;align-items:center;gap:6px;cursor:pointer;line-height:1.1}
+.mteam span{color:var(--muted);font-weight:500;font-size:16px}
+.dots{display:flex;flex-wrap:wrap;align-content:center;gap:9px;padding:12px}
+.dot{width:26px;height:26px;border-radius:50%;border:0;padding:0;cursor:pointer;background:var(--g)}
+.dot.s-y{background:var(--y)}.dot.s-r{background:var(--r)}
+.dot.flag{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--ink)}
+.legend{font-size:13px;color:var(--muted);margin:10px 2px 0;display:flex;flex-wrap:wrap;gap:4px 14px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px;background:var(--g)}
+.legend i.s-y{background:var(--y)}.legend i.s-r{background:var(--r)}
+.legend i.flag{background:transparent;box-shadow:inset 0 0 0 2px var(--ink)}
+
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;gap:12px;text-align:left;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 12px;color:var(--ink);font:inherit;cursor:pointer}
+.bar{flex:0 0 5px;border-radius:3px;background:var(--g)}
+.bar.s-y{background:var(--y)}.bar.s-r{background:var(--r)}
+.ib{display:flex;flex-direction:column;gap:2px;min-width:0}
+.it{font-weight:650;font-size:17px;overflow-wrap:anywhere}
+.im{color:var(--muted);font-size:14px}
+.in{font-size:15px;overflow-wrap:anywhere}
+.in.miss{color:var(--muted);font-style:italic}
+.fl{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{font-size:13px;padding:2px 8px;border-radius:6px;background:var(--soft);color:var(--ink)}
+.tag.over{background:color-mix(in srgb,var(--r) 15%,transparent);color:var(--r)}
+.tag.me{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+.tag.stale{background:color-mix(in srgb,var(--y) 22%,transparent)}
+.tag.dead{background:color-mix(in srgb,var(--y) 32%,transparent);font-weight:600}
+.calbox{background:var(--soft);border-radius:12px;padding:12px;margin:0 0 14px}
+.calbox .check{margin:10px 0 6px}
+.calbox p{margin:0}
+
+.notice{display:flex;gap:12px;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:16px}
+.notice.soft{border-left-color:var(--y)}
+.notice p{margin:2px 0 0;color:var(--muted);font-size:15px}
+.notice .btn{flex:0 0 auto}
+.inbox-hint{display:block;width:100%;text-align:left;background:var(--soft);border:0;border-radius:12px;padding:12px 14px;margin-bottom:16px;color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 -16px 14px;padding:0 16px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:20px;padding:6px 14px;font-size:17px;font-weight:600;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.sm{font-size:15px;padding:4px 12px}
+.row-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+
+label{display:block;font-size:14px;color:var(--muted);font-weight:600;margin:0 0 14px}
+input[type=text],input[type=date],select,textarea{display:block;width:100%;margin-top:6px;font:inherit;font-size:16px;font-weight:400;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input[type=date]{min-height:44px;-webkit-appearance:none;appearance:none}
+textarea{resize:vertical}
+fieldset{border:0;padding:0;margin:0 0 14px}
+legend{font-size:14px;color:var(--muted);font-weight:600;margin-bottom:6px;padding:0}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.segb{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:8px;font-size:18px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;cursor:pointer}
+.segb::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--g)}
+.segb.s-y::before{background:var(--y)}.segb.s-r::before{background:var(--r)}
+.segb.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--panel)}
+.check{display:flex;gap:10px;align-items:center;color:var(--ink);font-weight:500;font-size:16px}
+.check input{width:22px;height:22px;margin:0;flex:0 0 auto}
+
+.sheet-wrap{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.42);display:flex;align-items:flex-end;justify-content:center}
+.sheet-wrap[hidden]{display:none}
+.sheet{background:var(--panel);width:100%;max-width:680px;max-height:calc(100% - env(safe-area-inset-top,0px) - 20px);overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:18px 18px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px));animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(28px);opacity:.5}}
+.sheet input[type=text],.sheet input[type=date],.sheet select,.sheet textarea{background:var(--bg)}
+.sheet-acts{display:flex;gap:10px;margin-top:6px}
+.sheet-acts .btn{flex:1}
+.danger{display:flex;justify-content:space-between;gap:10px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+.pick{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+
+.capture{margin-bottom:22px}
+.capture textarea{margin:0 0 10px;background:var(--panel)}
+.note{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.note p{margin:0 0 4px;overflow-wrap:anywhere}
+.nacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+
+.rvprog{height:6px;background:var(--soft);border-radius:3px;overflow:hidden;margin-bottom:8px}
+.rvprog span{display:block;height:100%;background:var(--accent)}
+.rv h2{font-size:27px;margin:6px 0 2px;line-height:1.15;overflow-wrap:anywhere}
+.goal{background:var(--soft);border-radius:10px;padding:10px 12px;margin:12px 0}
+.rv .fl{margin:10px 0 14px}
+.rv-acts{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:8px}
+.big{font-size:60px;font-weight:700;margin:18px 0;line-height:1}
+.big span{font-size:21px;font-weight:600;color:var(--muted)}
+
+.empty{text-align:center;padding:48px 12px}
+.empty p{color:var(--muted);max-width:34em;margin:0 auto 18px}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.calm{color:var(--muted);text-align:center;padding:12px}
+.file{position:relative;color:var(--ink);font-size:18px;margin:0 0 10px}
+.file input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+details summary{color:var(--accent);font-weight:600;padding:8px 0;cursor:pointer}
+details textarea{margin-bottom:10px}
+.warnbox{background:color-mix(in srgb,var(--r) 14%,var(--panel));border-radius:12px;padding:12px 14px;margin-bottom:18px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+#toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translate(-50%,10px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:15px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:30;max-width:90%}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in"><h1 id="vtitle">Lage</h1><button class="btn pri sm" data-act="quick">+ Notiz</button></div></header>
+<main id="main"></main>
+<nav class="tabs" aria-label="Bereiche">
+  <button data-tab="lage">Lage</button>
+  <button data-tab="themen">Themen</button>
+  <button data-tab="inbox">Inbox<span id="ibadge"></span></button>
+  <button data-tab="review">Review</button>
+  <button data-tab="daten">Daten</button>
+</nav>
+<div id="sheet" class="sheet-wrap" hidden><div class="sheet" role="dialog" aria-modal="true" id="sheet-body"></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+var storageOk=true;
+const KEY='themen-cockpit-v1';
+const DEFAULT_TEAMS=['Team A','Team B','Team C','Team D'];
+const STALE=21;
+const ST={g:'Grün',y:'Gelb',r:'Rot'};
+const WAIT={none:'Nichts',decision:'Meine Entscheidung oder Freigabe',promise:'Meine Zusage',others:'Andere (intern oder extern)'};
+const REMIND=[[0,'Am Tag der Deadline'],[1,'1 Tag vorher'],[3,'3 Tage vorher'],[7,'1 Woche vorher'],[14,'2 Wochen vorher']];
+const TITLES={lage:'Lage',themen:'Themen',inbox:'Inbox',review:'Review',daten:'Daten'};
+
+let S=load();
+let view='lage', teamFilter='Alle', personFilter='Alle', showArchived=false, rv=null, edit=null, pending=null;
+
+function blank(){return{topics:[],inbox:[],lastReview:null,lastExport:null,teams:DEFAULT_TEAMS.slice()}}
+function load(){
+  try{
+    localStorage.setItem('__tc','1');localStorage.removeItem('__tc');
+    const r=localStorage.getItem(KEY);
+    if(r){const d=JSON.parse(r);return normalize(d)}
+  }catch(e){storageOk=false}
+  return blank();
+}
+function normalize(d){
+  const b=blank();
+  return{
+    topics:Array.isArray(d.topics)?d.topics.filter(t=>t&&t.id&&t.title):[],
+    inbox:Array.isArray(d.inbox)?d.inbox.filter(n=>n&&n.id):[],
+    lastReview:d.lastReview||b.lastReview,
+    lastExport:d.lastExport||b.lastExport,
+    teams:(Array.isArray(d.teams)?d.teams.map(x=>String(x).trim()).filter(Boolean):[]).length?d.teams.map(x=>String(x).trim()).filter(Boolean):b.teams
+  };
+}
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(S))}
+  catch(e){storageOk=false;toast('Speichern nicht möglich. Erstelle jetzt eine Sicherung.')}
+}
+
+const $=s=>document.querySelector(s);
+const val=id=>{const el=document.getElementById(id);return el?el.value:''};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function today(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+function days(ts){return ts?Math.floor((Date.now()-ts)/864e5):null}
+function fmt(iso){if(!iso)return'';const p=iso.split('-');return p[2]+'.'+p[1]+'.'+p[0].slice(2)}
+function rel(ts){const d=days(ts);if(d===null)return'nie';if(d<=0)return'heute';if(d===1)return'gestern';return'vor '+d+' Tagen'}
+function active(){return S.topics.filter(t=>!t.archived)}
+function sev(t){return{r:0,y:1,g:2}[t.status]??2}
+function bySev(a,b){return sev(a)-sev(b)||(a.due||'9999').localeCompare(b.due||'9999')||a.title.localeCompare(b.title,'de')}
+function minutes(n){return Math.max(5,Math.round(n*0.75))}
+function teamsUsed(){const extra=[...new Set(S.topics.map(t=>t.team).filter(x=>x&&!S.teams.includes(x)))];return S.teams.concat(extra)}
+
+function daysUntil(iso){if(!iso)return null;const a=new Date(today()+'T00:00:00'),b=new Date(iso+'T00:00:00');return Math.round((b-a)/864e5)}
+function dlText(n){return n<0?'Deadline seit '+(-n)+(n===-1?' Tag':' Tagen')+' überschritten':n===0?'Deadline heute':n===1?'Deadline morgen':'Deadline in '+n+' Tagen'}
+function flags(t){
+  const f=[];
+  const dn=daysUntil(t.deadline);
+  if(dn!==null&&(dn<0||dn<=(t.remind??3)))f.push({k:dn<0?'over':'dead',l:dlText(dn)});
+  if(t.due&&t.due<today())f.push({k:'over',l:'Meilenstein überschritten'});
+  const d=days(t.progressAt);
+  if(d!==null&&d>=STALE)f.push({k:'stale',l:d+' Tage ohne Bewegung'});
+  if(t.waiting==='decision')f.push({k:'me',l:'Wartet auf deine Entscheidung'});
+  if(t.waiting==='promise')f.push({k:'me',l:'Deine Zusage ist offen'});
+  return f;
+}
+function who(t){return t.owner?esc(t.owner)+' ('+esc(t.team)+')':esc(t.team)}
+function tags(f){return f.map(x=>'<span class="tag '+x.k+'">'+x.l+'</span>').join('')}
+
+function item(t){
+  const f=flags(t);
+  let meta=who(t);
+  if(t.deadline)meta+=', Deadline '+fmt(t.deadline);
+  if(t.due)meta+=', Meilenstein '+fmt(t.due);
+  if(t.waiting==='others'&&t.waitNote)meta+=', wartet auf '+esc(t.waitNote);
+  return '<button class="item" data-act="open" data-id="'+t.id+'"><span class="bar s-'+t.status+'"></span><span class="ib">'+
+    '<span class="it">'+esc(t.title)+'</span><span class="im">'+meta+'</span>'+
+    (t.next?'<span class="in">Nächster Schritt: '+esc(t.next)+'</span>':'<span class="in miss">Kein nächster Schritt festgelegt</span>')+
+    (f.length?'<span class="fl">'+tags(f)+'</span>':'')+'</span></button>';
+}
+function sect(title,list){return '<section class="block"><h2>'+title+'</h2><div class="list">'+list.map(item).join('')+'</div></section>'}
+function empty(title,text,btns){return '<div class="empty"><h2>'+title+'</h2><p>'+text+'</p><div class="btns">'+btns+'</div></div>'}
+function storageWarn(){return storageOk?'':'<div class="warnbox"><strong>Speicher nicht verfügbar.</strong> Dieser Browser erlaubt kein dauerhaftes Speichern. Öffne die App über den Home-Bildschirm oder in Safari ohne privaten Modus.</div>'}
+
+/* ---------- Ansichten ---------- */
+function vLage(){
+  const a=active();
+  let h=storageWarn();
+  if(!a.length&&!S.inbox.length)return h+empty('Noch keine Themen','Lege dein erstes Thema an oder notiere kurz, was gerade ansteht. Einsortieren kannst du später. Eigene Teamnamen vergibst du unter „Daten“.','<button class="btn pri" data-act="new">Thema anlegen</button><button class="btn" data-act="quick">Notiz erfassen</button>');
+  const rd=days(S.lastReview);
+  if(a.length&&(rd===null||rd>=7))h+='<section class="notice"><div><strong>Wochen-Review fällig</strong><p>'+(rd===null?'Noch kein Review abgeschlossen.':'Letztes Review '+rel(S.lastReview)+'.')+' '+a.length+' Themen, etwa '+minutes(a.length)+' Minuten.</p></div><button class="btn pri" data-act="go" data-v="review">Starten</button></section>';
+  if(S.inbox.length)h+='<button class="inbox-hint" data-act="go" data-v="inbox">'+S.inbox.length+(S.inbox.length===1?' Notiz wartet':' Notizen warten')+' in der Inbox aufs Einsortieren</button>';
+  if(a.length){
+    h+='<section class="block"><h2>Lagebild</h2><div class="matrix">';
+    for(const tm of teamsUsed()){
+      const ts=a.filter(t=>t.team===tm).sort(bySev);
+      if(!ts.length)continue;
+      h+='<div class="mrow"><button class="mteam" data-act="team" data-team="'+esc(tm)+'">'+esc(tm)+'<span>'+ts.length+'</span></button><div class="dots">'+
+        ts.map(t=>'<button class="dot s-'+t.status+(flags(t).length?' flag':'')+'" data-act="open" data-id="'+t.id+'" aria-label="'+esc(t.title)+', '+ST[t.status]+'" title="'+esc(t.title)+(t.owner?' ('+esc(t.owner)+')':'')+'"></button>').join('')+'</div></div>';
+    }
+    h+='</div><p class="legend"><span><i></i>läuft</span><span><i class="s-y"></i>Risiko</span><span><i class="s-r"></i>kritisch</span><span><i class="flag"></i>mit Warnung</span></p></section>';
+  }
+  const fr=a.filter(t=>{const n=daysUntil(t.deadline);return n!==null&&n<=14}).sort((x,y)=>x.deadline.localeCompare(y.deadline));
+  if(fr.length)h+=sect('Fristen in den nächsten 14 Tagen',fr);
+  const me=a.filter(t=>!fr.includes(t)&&(t.waiting==='decision'||t.waiting==='promise')).sort(bySev);
+  if(me.length)h+=sect('Wartet auf dich',me);
+  const warn=a.filter(t=>!me.includes(t)&&!fr.includes(t)&&(t.status==='r'||flags(t).length)).sort(bySev);
+  if(warn.length)h+=sect('Achtung',warn);
+  if(a.length&&!fr.length&&!me.length&&!warn.length)h+='<p class="calm">Keine Warnungen. Alle Themen sind in Bewegung.</p>';
+  const ed=days(S.lastExport);
+  if(a.length&&(ed===null||ed>=14))h+='<section class="notice soft"><div><strong>Sicherung empfohlen</strong><p>'+(ed===null?'Noch keine Sicherung erstellt.':'Letzte Sicherung '+rel(S.lastExport)+'.')+' Die Daten liegen nur auf diesem Gerät.</p></div><button class="btn" data-act="export">Sichern</button></section>';
+  return h;
+}
+
+function vThemen(){
+  const used=teamsUsed().filter(tm=>S.topics.some(t=>t.team===tm));
+  let h='<div class="chips">'+['Alle'].concat(used).map(tm=>'<button class="chip'+(teamFilter===tm?' on':'')+'" data-act="chip" data-team="'+esc(tm)+'">'+esc(tm)+'</button>').join('')+'</div>';
+  if(teamFilter!=='Alle'){const ps=[...new Set(S.topics.filter(t=>t.team===teamFilter&&t.owner).map(t=>t.owner))].sort((x,y)=>x.localeCompare(y,'de'));if(ps.length)h+='<div class="chips">'+['Alle'].concat(ps).map(p=>'<button class="chip sm'+(personFilter===p?' on':'')+'" data-act="pchip" data-p="'+esc(p)+'">'+(p==='Alle'?'Alle Personen':esc(p))+'</button>').join('')+'</div>'}
+  h+='<div class="row-actions"><button class="btn pri sm" data-act="new">Neues Thema</button><button class="link" data-act="arch">'+(showArchived?'Aktive anzeigen':'Erledigte anzeigen')+'</button></div>';
+  let list=S.topics.filter(t=>showArchived?t.archived:!t.archived);
+  if(teamFilter!=='Alle')list=list.filter(t=>t.team===teamFilter);
+  if(personFilter!=='Alle')list=list.filter(t=>(t.owner||'')===personFilter);
+  list.sort(bySev);
+  if(!list.length)return h+'<p class="calm">'+(showArchived?'Noch keine erledigten Themen.':'Hier gibt es noch keine aktiven Themen.')+'</p>';
+  return h+'<div class="list">'+list.map(item).join('')+'</div>';
+}
+
+function vInbox(){
+  let h='<section class="capture"><label class="sr" for="cap">Notiz</label><textarea id="cap" rows="3" placeholder="Was ist gerade aufgekommen? Kurz notieren, einsortieren kannst du später."></textarea><button class="btn pri wide" data-act="addInbox">In Inbox ablegen</button></section>';
+  if(!S.inbox.length)return h+'<p class="calm">Die Inbox ist leer. Alles ist einsortiert.</p>';
+  return h+S.inbox.slice().reverse().map(n=>'<div class="note"><p>'+esc(n.text).replace(/\n/g,'<br>')+'</p><span class="im">'+rel(n.at)+'</span><div class="nacts"><button class="btn sm pri" data-act="toTopic" data-id="'+n.id+'">Als Thema anlegen</button>'+(active().length?'<button class="btn sm" data-act="attach" data-id="'+n.id+'">Zu Thema hinzufügen</button>':'')+'<button class="btn sm ghost" data-act="delNote" data-id="'+n.id+'">Löschen</button></div></div>').join('');
+}
+
+function waitOpts(cur){return Object.keys(WAIT).map(k=>'<option value="'+k+'"'+(cur===k?' selected':'')+'>'+WAIT[k]+'</option>').join('')}
+function segHtml(id,cur){return '<div class="seg" id="'+id+'">'+['g','y','r'].map(s=>'<button type="button" class="segb s-'+s+(cur===s?' on':'')+'" data-act="seg" data-val="'+s+'" aria-pressed="'+(cur===s)+'">'+ST[s]+'</button>').join('')+'</div>'}
+
+function vReview(){
+  const a=active();
+  if(!a.length&&!rv)return empty('Nichts zu prüfen','Sobald du Themen angelegt hast, führt dich das Review einmal pro Woche durch alle.','<button class="btn pri" data-act="new">Thema anlegen</button>');
+  if(!rv){
+    return '<section><h2>Wochen-Review</h2><p>Du gehst jedes aktive Thema einmal durch: Ampel prüfen, nächsten Schritt schärfen, Meilenstein setzen. Themen, die am längsten ruhen, kommen zuerst.</p>'+
+      '<p class="big">'+a.length+'<span> Themen, etwa '+minutes(a.length)+' Minuten</span></p>'+
+      (S.inbox.length?'<p class="im">Tipp: Sortiere vorher die '+S.inbox.length+' Inbox-Notizen ein.</p>':'')+
+      '<button class="btn pri wide" data-act="rvStart">Review starten</button><p class="im" style="margin-top:12px">'+(S.lastReview?'Letztes Review '+rel(S.lastReview)+'.':'Noch kein Review abgeschlossen.')+'</p></section>';
+  }
+  if(rv.i>=rv.q.length){
+    const b=active();
+    return '<section class="empty"><h2>Review abgeschlossen</h2><p>'+rv.changed.size+' Themen aktualisiert, '+rv.done+' als erledigt abgelegt. Jetzt '+b.filter(t=>t.status==='r').length+' rot und '+b.filter(t=>t.status==='y').length+' gelb.</p><div class="btns"><button class="btn pri" data-act="rvClose">Zum Lagebild</button></div></section>';
+  }
+  const t=S.topics.find(x=>x.id===rv.q[rv.i]);
+  if(!t){rv.i++;return vReview()}
+  const f=flags(t);
+  return '<section class="rv"><div class="rvprog"><span style="width:'+(rv.i/rv.q.length*100)+'%"></span></div><p class="im">Thema '+(rv.i+1)+' von '+rv.q.length+'</p>'+
+    '<h2>'+esc(t.title)+'</h2><p class="im">'+who(t)+(t.deadline?', Deadline '+fmt(t.deadline):'')+', letzte Bewegung '+rel(t.progressAt)+'</p>'+
+    (t.goal?'<p class="goal">Ziel: '+esc(t.goal)+'</p>':'')+
+    (f.length?'<p class="fl">'+tags(f)+'</p>':'<div style="height:12px"></div>')+
+    '<fieldset><legend>Wie steht es?</legend>'+segHtml('r-status',t.status)+'</fieldset>'+
+    '<label>Nächster Schritt<textarea id="r-next" rows="2" placeholder="Was passiert als Nächstes, und wer macht es?">'+esc(t.next)+'</textarea></label>'+
+    '<label>Nächster Meilenstein<input type="date" id="r-due" value="'+esc(t.due||'')+'"></label>'+
+    '<label>Wartet auf<select id="r-wait">'+waitOpts(t.waiting||'none')+'</select></label>'+
+    '<label class="check"><input type="checkbox" id="r-prog"> Seit dem letzten Review gab es Fortschritt</label>'+
+    '<div class="rv-acts"><button class="btn" data-act="rvPrev"'+(rv.i===0?' disabled':'')+'>Zurück</button><button class="btn pri" data-act="rvNext">Weiter</button></div>'+
+    '<div class="row-actions" style="margin-top:6px"><button class="link" data-act="rvDone">Thema ist erledigt</button><button class="link" data-act="rvStop">Review beenden</button></div></section>';
+}
+
+function vDaten(){
+  const a=active().length, ar=S.topics.length-a;
+  return storageWarn()+
+  '<section class="block"><h2>Sicherung</h2><p>Alle Inhalte liegen ausschließlich im Speicher dieses Geräts. Nichts wird an einen Server gesendet. Erstelle regelmäßig eine Sicherung und lege sie in der Dateien-App unter „Auf meinem iPhone“ ab.</p><p class="im">'+(S.lastExport?'Letzte Sicherung '+rel(S.lastExport)+'.':'Noch keine Sicherung erstellt.')+'</p><button class="btn pri wide" data-act="export">Sicherung erstellen</button></section>'+
+  '<section class="block"><h2>Wiederherstellen</h2><p>Lädt eine Sicherungsdatei und ersetzt alle aktuellen Daten auf diesem Gerät.</p><label class="btn wide file">Sicherungsdatei wählen<input type="file" id="imp-file" accept=".json,application/json"></label><details><summary>Oder Text einfügen</summary><textarea id="imp-text" rows="4" placeholder="Inhalt der Sicherung hier einfügen"></textarea><button class="btn" data-act="impText">Aus Text wiederherstellen</button></details></section>'+
+  '<section class="block"><h2>Teams</h2><p>'+S.teams.map(esc).join(', ')+'</p><button class="btn" data-act="teamsEdit">Teams bearbeiten</button></section>'+
+  '<section class="block"><h2>Auf dem iPhone nutzen</h2><p>Öffne diese Seite in Safari, tippe auf Teilen und dann auf „Zum Home-Bildschirm“. So startet das Cockpit wie eine App, und iOS behält die Daten dauerhaft.</p></section>'+
+  '<section class="block"><h2>Bestand</h2><p>'+a+' aktive Themen, '+ar+' erledigt, '+S.inbox.length+' Inbox-Notizen.</p><button class="btn ghost red" data-act="wipe">Alle Daten auf diesem Gerät löschen</button></section>';
+}
+
+function render(){
+  $('#vtitle').textContent=TITLES[view];
+  document.querySelectorAll('.tabs button').forEach(b=>{const on=b.dataset.tab===view;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  $('#ibadge').innerHTML=S.inbox.length?'<span class="badge">'+S.inbox.length+'</span>':'';
+  const fn={lage:vLage,themen:vThemen,inbox:vInbox,review:vReview,daten:vDaten}[view];
+  $('#main').innerHTML=fn();
+}
+function go(v){view=v;render();window.scrollTo(0,0)}
+
+/* ---------- Sheet ---------- */
+function sheet(html){const w=$('#sheet');$('#sheet-body').innerHTML=html;w.hidden=false;$('#sheet-body').scrollTop=0;const f=$('#sheet-body').querySelector('[data-focus]');if(f)setTimeout(()=>f.focus(),60)}
+function closeSheet(){$('#sheet').hidden=true;$('#sheet-body').innerHTML='';edit=null;pending=null}
+function confirmSheet(title,text,okLabel,cb){pending=cb;sheet('<h2>'+title+'</h2><p>'+text+'</p><div class="sheet-acts"><button class="btn pri" data-act="ok">'+okLabel+'</button><button class="btn ghost" data-act="close">Abbrechen</button></div>')}
+
+let tt=null;
+function toast(m){const el=$('#toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400)}
+
+function openEditor(id,prefill,fromNote){
+  const ex=id?S.topics.find(x=>x.id===id):null;
+  const t=ex||Object.assign({title:'',team:teamFilter!=='Alle'?teamFilter:S.teams[0],goal:'',status:'g',next:'',due:'',owner:'',deadline:'',remind:3,waiting:'none',waitNote:'',notes:''},prefill||{});
+  edit={id:id||null,fromNote:fromNote||null};
+  const teams=S.teams.includes(t.team)?S.teams:S.teams.concat([t.team]);
+  sheet('<h2>'+(id?'Thema bearbeiten':'Neues Thema')+'</h2>'+
+    '<label>Titel<input type="text" id="f-title" value="'+esc(t.title)+'" maxlength="140"'+(id?'':' data-focus')+'></label>'+
+    '<label>Verantwortliches Team<select id="f-team">'+teams.map(tm=>'<option'+(tm===t.team?' selected':'')+'>'+esc(tm)+'</option>').join('')+'</select></label>'+
+    '<label>Verantwortlich im Team<input type="text" id="f-owner" list="owner-list" value="'+esc(t.owner||'')+'" placeholder="Name der Person" autocomplete="off"></label><datalist id="owner-list">'+[...new Set(S.topics.map(x=>x.owner).filter(Boolean))].sort((x,y)=>x.localeCompare(y,'de')).map(o=>'<option value="'+esc(o)+'">').join('')+'</datalist>'+
+    '<label>Ziel in einem Satz<input type="text" id="f-goal" value="'+esc(t.goal)+'" placeholder="Woran erkennst du, dass es erledigt ist?"></label>'+
+    '<fieldset><legend>Status</legend>'+segHtml('f-status',t.status)+'</fieldset>'+
+    '<label>Nächster Schritt<textarea id="f-next" rows="2" placeholder="Was passiert als Nächstes, und wer macht es?">'+esc(t.next)+'</textarea></label>'+
+    '<label>Nächster Meilenstein<input type="date" id="f-due" value="'+esc(t.due||'')+'"></label>'+
+    '<label>Deadline (Endtermin)<input type="date" id="f-deadline" value="'+esc(t.deadline||'')+'"></label>'+
+    '<label>Erinnern<select id="f-remind">'+REMIND.map(r=>'<option value="'+r[0]+'"'+((t.remind??3)===r[0]?' selected':'')+'>'+r[1]+'</option>').join('')+'</select></label>'+
+    '<div class="calbox"><button type="button" class="btn sm" data-act="cal">In iPhone-Kalender eintragen</button><label class="check"><input type="checkbox" id="f-calname"> Thementitel im Kalender anzeigen</label><p class="im">Ohne Haken steht im Kalender nur „Frist im Themen-Cockpit“. So erscheint kein Inhalt im Kalender, auch wenn er synchronisiert wird.</p></div>'+
+    '<label>Wartet auf<select id="f-wait">'+waitOpts(t.waiting||'none')+'</select></label>'+
+    '<label>Details dazu<input type="text" id="f-waitnote" value="'+esc(t.waitNote)+'" placeholder="z. B. Budgetfreigabe, Rückmeldung Dienstleister"></label>'+
+    '<label>Notizen<textarea id="f-notes" rows="4">'+esc(t.notes)+'</textarea></label>'+
+    (ex?'<p class="im">Angelegt '+rel(ex.created)+', letzte Bewegung '+rel(ex.progressAt)+'.</p>':'')+
+    '<div class="sheet-acts"><button class="btn pri" data-act="saveTopic">Speichern</button><button class="btn ghost" data-act="close">Abbrechen</button></div>'+
+    (ex?'<div class="danger"><button class="btn sm" data-act="toggleArch" data-id="'+ex.id+'">'+(ex.archived?'Wieder aktivieren':'Als erledigt ablegen')+'</button><button class="btn sm ghost red" data-act="delTopic" data-id="'+ex.id+'">Löschen</button></div>':''));
+}
+
+function saveTopic(){
+  const title=val('f-title').trim();
+  if(!title){toast('Gib dem Thema einen Titel.');$('#f-title').focus();return}
+  const on=document.querySelector('#f-status .on');
+  const d={title:title,team:val('f-team'),goal:val('f-goal').trim(),status:on?on.dataset.val:'g',next:val('f-next').trim(),due:val('f-due'),waiting:val('f-wait'),waitNote:val('f-waitnote').trim(),notes:val('f-notes'),owner:val('f-owner').trim(),deadline:val('f-deadline'),remind:+val('f-remind')};
+  const now=Date.now();
+  if(edit&&edit.id){
+    const t=S.topics.find(x=>x.id===edit.id);
+    if(t){const moved=t.next!==d.next||(t.due||'')!==d.due||t.status!==d.status||t.waiting!==d.waiting;Object.assign(t,d,{updatedAt:now});if(moved)t.progressAt=now}
+  }else{
+    S.topics.push(Object.assign({id:uid()},d,{created:now,progressAt:now,updatedAt:now,archived:false}));
+  }
+  if(edit&&edit.fromNote)S.inbox=S.inbox.filter(n=>n.id!==edit.fromNote);
+  save();closeSheet();render();toast('Gespeichert.');
+}
+
+/* ---------- Review ---------- */
+function rvApply(){
+  if(!rv||rv.i>=rv.q.length)return null;
+  const t=S.topics.find(x=>x.id===rv.q[rv.i]);if(!t)return null;
+  const on=document.querySelector('#r-status .on');
+  const st=on?on.dataset.val:t.status, nx=val('r-next').trim(), du=val('r-due'), wt=val('r-wait');
+  const prog=document.getElementById('r-prog');
+  const changed=st!==t.status||nx!==(t.next||'')||du!==(t.due||'')||wt!==(t.waiting||'none');
+  if(changed||(prog&&prog.checked)){Object.assign(t,{status:st,next:nx,due:du,waiting:wt,updatedAt:Date.now(),progressAt:Date.now()});rv.changed.add(t.id)}
+  save();return t;
+}
+function rvFinishIfDone(){if(rv&&rv.i>=rv.q.length){S.lastReview=Date.now();save()}}
+
+/* ---------- Kalender ---------- */
+function icsEsc(s){return String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n')}
+function makeIcs(id,summary,iso,remind){
+  const d=iso.replace(/-/g,'');
+  const n=new Date(iso+'T00:00:00');n.setDate(n.getDate()+1);
+  const e=n.getFullYear()+String(n.getMonth()+1).padStart(2,'0')+String(n.getDate()).padStart(2,'0');
+  const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+  const alarm=t=>['BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+icsEsc(summary),'TRIGGER:'+t,'END:VALARM'];
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Themen-Cockpit//DE','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT','UID:'+id+'@themen-cockpit','DTSTAMP:'+stamp,'DTSTART;VALUE=DATE:'+d,'DTEND;VALUE=DATE:'+e,'SUMMARY:'+icsEsc(summary),'TRANSP:TRANSPARENT'];
+  if(remind>0)L.push(...alarm('-P'+(remind-1)+'DT15H'));
+  L.push(...alarm('PT9H'));
+  L.push('END:VEVENT','END:VCALENDAR');
+  return L.join('\r\n')+'\r\n';
+}
+
+/* ---------- Sicherung ---------- */
+let dlP=null;
+function getDl(){
+  if(!dlP)dlP=(window.claude&&typeof window.claude.use==='function')?window.claude.use('downloads').catch(()=>null):Promise.resolve(null);
+  return dlP;
+}
+function markExported(){S.lastExport=Date.now();save();render()}
+async function doExport(){
+  const json=JSON.stringify({app:'themen-cockpit',version:1,exportedAt:new Date().toISOString(),data:S},null,1);
+  const fn='themen-cockpit-sicherung-'+today()+'.json';
+  const dl=await getDl();
+  if(dl){
+    try{await dl.save({filename:fn,data:json});markExported();toast('Sicherung gespeichert.');return}
+    catch(err){
+      const c=err&&err.code;
+      if(c==='declined'){toast('Sicherung abgebrochen.');return}
+      if(c==='rate_limited'){toast('Kurz warten und erneut versuchen.');return}
+    }
+  }else if(window.self===window.top){
+    try{
+      const file=new File([json],fn,{type:'application/json'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file]});markExported();toast('Sicherung übergeben.');return}
+    }catch(err){if(err&&err.name==='AbortError'){toast('Sicherung abgebrochen.');return}}
+    try{
+      const u=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+      const a=document.createElement('a');a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(u),5000);markExported();toast('Sicherung gespeichert.');return;
+    }catch(e){}
+  }
+  sheet('<h2>Sicherung als Text</h2><p>Das direkte Speichern ist hier nicht möglich. Kopiere den Text und sichere ihn in einer Datei auf dem Gerät.</p><textarea id="exp-text" rows="8" readonly>'+esc(json)+'</textarea><div class="sheet-acts" style="margin-top:12px"><button class="btn pri" data-act="copyExp">Text kopieren</button><button class="btn ghost" data-act="close">Schließen</button></div>');
+}
+function importText(txt){
+  let obj;
+  try{obj=JSON.parse(txt)}catch(e){toast('Die Datei ist keine gültige Sicherung.');return}
+  const d=obj&&obj.data?obj.data:obj;
+  if(!d||!Array.isArray(d.topics)){toast('In der Datei wurden keine Themen gefunden.');return}
+  const n=normalize(d);
+  confirmSheet('Sicherung wiederherstellen?','Die Sicherung enthält '+n.topics.length+' Themen und '+n.inbox.length+' Inbox-Notizen. Alle aktuellen Daten auf diesem Gerät werden ersetzt.','Wiederherstellen',()=>{S=n;save();rv=null;closeSheet();go('lage');toast('Sicherung wiederhergestellt.')});
+}
+
+/* ---------- Aktionen ---------- */
+const A={
+  go:b=>go(b.dataset.v),
+  quick:()=>sheet('<h2>Notiz erfassen</h2><label class="sr" for="q-text">Notiz</label><textarea id="q-text" rows="4" placeholder="Was ist gerade aufgekommen?" data-focus></textarea><div class="sheet-acts" style="margin-top:12px"><button class="btn pri" data-act="saveQuick">In Inbox ablegen</button><button class="btn ghost" data-act="close">Abbrechen</button></div>'),
+  saveQuick:()=>{const t=val('q-text').trim();if(!t){toast('Die Notiz ist leer.');return}S.inbox.push({id:uid(),text:t,at:Date.now()});save();closeSheet();render();toast('In Inbox abgelegt.')},
+  addInbox:()=>{const t=val('cap').trim();if(!t){toast('Die Notiz ist leer.');return}S.inbox.push({id:uid(),text:t,at:Date.now()});save();render();toast('In Inbox abgelegt.')},
+  new:()=>openEditor(null,{}),
+  open:b=>openEditor(b.dataset.id),
+  team:b=>{teamFilter=b.dataset.team;personFilter='Alle';showArchived=false;go('themen')},
+  chip:b=>{teamFilter=b.dataset.team;personFilter='Alle';render()},
+  pchip:b=>{personFilter=b.dataset.p;render()},
+  arch:()=>{showArchived=!showArchived;render()},
+  seg:b=>{b.parentElement.querySelectorAll('.segb').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)})},
+  saveTopic:saveTopic,
+  close:closeSheet,
+  ok:()=>{const cb=pending;pending=null;if(cb)cb()},
+  toggleArch:b=>{const t=S.topics.find(x=>x.id===b.dataset.id);if(!t)return;t.archived=!t.archived;t.updatedAt=Date.now();if(!t.archived)t.progressAt=Date.now();save();closeSheet();render();toast(t.archived?'Als erledigt abgelegt.':'Wieder aktiv.')},
+  delTopic:b=>{const id=b.dataset.id;const t=S.topics.find(x=>x.id===id);confirmSheet('Thema löschen?','„'+esc(t?t.title:'')+'“ wird endgültig gelöscht. Wenn es nur abgeschlossen ist, lege es besser als erledigt ab.','Löschen',()=>{S.topics=S.topics.filter(x=>x.id!==id);save();closeSheet();render();toast('Thema gelöscht.')})},
+  toTopic:b=>{const n=S.inbox.find(x=>x.id===b.dataset.id);if(!n)return;const lines=n.text.split('\n');openEditor(null,{title:lines[0].slice(0,140),notes:lines.slice(1).join('\n').trim()},n.id)},
+  attach:b=>{const nid=b.dataset.id;const list=active().sort((x,y)=>x.title.localeCompare(y.title,'de'));sheet('<h2>Zu welchem Thema?</h2><p class="im">Die Notiz wird mit Datum an die Notizen des Themas angehängt.</p><div class="pick">'+list.map(t=>'<button class="item" data-act="attachTo" data-id="'+t.id+'" data-note="'+nid+'"><span class="bar s-'+t.status+'"></span><span class="ib"><span class="it">'+esc(t.title)+'</span><span class="im">'+who(t)+'</span></span></button>').join('')+'</div><button class="btn ghost wide" data-act="close">Abbrechen</button>')},
+  attachTo:b=>{const t=S.topics.find(x=>x.id===b.dataset.id),n=S.inbox.find(x=>x.id===b.dataset.note);if(!t||!n)return;const stamp=fmt(today());t.notes=(t.notes?t.notes.trimEnd()+'\n':'')+stamp+': '+n.text;t.updatedAt=Date.now();S.inbox=S.inbox.filter(x=>x.id!==n.id);save();closeSheet();render();toast('An „'+t.title+'“ angehängt.')},
+  delNote:b=>{S.inbox=S.inbox.filter(x=>x.id!==b.dataset.id);save();render();toast('Notiz gelöscht.')},
+  rvStart:()=>{const q=active().sort((a,b)=>(a.progressAt||0)-(b.progressAt||0)).map(t=>t.id);rv={q:q,i:0,changed:new Set(),done:0};render();window.scrollTo(0,0)},
+  rvNext:()=>{rvApply();rv.i++;rvFinishIfDone();render();window.scrollTo(0,0)},
+  rvPrev:()=>{rvApply();if(rv.i>0)rv.i--;render();window.scrollTo(0,0)},
+  rvDone:()=>{const t=rvApply();if(t){t.archived=true;t.updatedAt=Date.now();rv.done++;save()}rv.i++;rvFinishIfDone();render();window.scrollTo(0,0)},
+  rvStop:()=>{rvApply();rv=null;render();toast('Review unterbrochen. Änderungen sind gespeichert.')},
+  rvClose:()=>{rv=null;go('lage')},
+  teamsEdit:()=>sheet('<h2>Teams bearbeiten</h2><p class="im">Ein Umbenennen gilt auch für alle Themen des Teams. Ein leeres Feld entfernt das Team aus der Auswahl, seine Themen behalten den bisherigen Namen.</p><div id="team-list">'+S.teams.map((t,i)=>'<input type="text" data-i="'+i+'" value="'+esc(t)+'" style="margin-bottom:8px" aria-label="Team '+(i+1)+'">').join('')+'</div><button class="btn sm" data-act="teamAdd">Team hinzufügen</button><div class="sheet-acts" style="margin-top:16px"><button class="btn pri" data-act="teamSave">Speichern</button><button class="btn ghost" data-act="close">Abbrechen</button></div>'),
+  teamAdd:()=>{const inp=document.createElement('input');inp.type='text';inp.placeholder='Name des neuen Teams';inp.style.marginBottom='8px';inp.setAttribute('aria-label','Neues Team');$('#team-list').appendChild(inp);inp.focus()},
+  teamSave:()=>{const names=[];const ren=[];document.querySelectorAll('#team-list input').forEach(inp=>{const v=inp.value.trim();if(inp.dataset.i!==undefined){const old=S.teams[+inp.dataset.i];if(v&&old!==v)ren.push([old,v])}if(v&&!names.includes(v))names.push(v)});if(!names.length){toast('Mindestens ein Team wird benötigt.');return}ren.forEach(p=>{S.topics.forEach(t=>{if(t.team===p[0])t.team=p[1]});if(teamFilter===p[0])teamFilter=p[1]});S.teams=names;save();closeSheet();render();toast('Teams gespeichert.')},
+  cal:()=>{
+    const dl=val('f-deadline');
+    if(!dl){toast('Setze zuerst eine Deadline.');return}
+    if(window.self!==window.top){toast('Kalendereinträge funktionieren nur in der Version auf deinem Home-Bildschirm.');return}
+    const title=val('f-title').trim()||'Thema';
+    const cb=document.getElementById('f-calname');
+    const ics=makeIcs((edit&&edit.id)||uid(),cb&&cb.checked?'Frist: '+title:'Frist im Themen-Cockpit',dl,+val('f-remind'));
+    try{const u=URL.createObjectURL(new Blob([ics],{type:'text/calendar;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='frist.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),10000);toast('Kalendereintrag erstellt. Bestätige mit „Hinzufügen“.')}
+    catch(e){toast('Der Kalendereintrag konnte nicht erstellt werden.')}
+  },
+  export:()=>doExport(),
+  copyExp:()=>{const ta=$('#exp-text');if(!ta)return;const done=()=>toast('Kopiert.');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(done,()=>{ta.focus();ta.select();toast('Text ist markiert. Tippe auf Kopieren.')})}else{ta.focus();ta.select();toast('Text ist markiert. Tippe auf Kopieren.')}},
+  impText:()=>{const t=val('imp-text').trim();if(!t){toast('Füge zuerst den Text der Sicherung ein.');return}importText(t)},
+  wipe:()=>confirmSheet('Alle Daten löschen?','Alle Themen und Notizen auf diesem Gerät werden endgültig gelöscht. Erstelle vorher eine Sicherung, wenn du sie behalten willst.','Alles löschen',()=>{S=blank();save();rv=null;closeSheet();go('lage');toast('Alle Daten gelöscht.')})
+};
+
+document.addEventListener('click',e=>{
+  if(e.target===$('#sheet')){closeSheet();return}
+  const b=e.target.closest('[data-act],[data-tab]');
+  if(!b||b.disabled)return;
+  if(b.dataset.tab){if(b.dataset.tab!=='review'&&rv&&view==='review'){rvApply()}go(b.dataset.tab);return}
+  const f=A[b.dataset.act];if(f){e.preventDefault();f(b,e)}
+});
+document.addEventListener('change',e=>{
+  if(e.target&&e.target.id==='imp-file'){
+    const file=e.target.files&&e.target.files[0];if(!file)return;
+    const r=new FileReader();r.onload=()=>importText(String(r.result));r.onerror=()=>toast('Die Datei konnte nicht gelesen werden.');r.readAsText(file);e.target.value='';
+  }
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&$('#sheet').hidden&&view!=='review')render()});
+
+getDl();
+render();
+})();
+</script>
+</body>
+</html>
