@@ -52,7 +52,7 @@ h2{font-size:21px;font-weight:700;margin:0 0 10px}
 .block p{margin:0 0 10px}
 
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:center;background:var(--panel);border-top:1px solid var(--line);padding:2px 6px calc(2px + env(safe-area-inset-bottom,0px))}
-.tabs button{flex:1;max-width:136px;border:0;background:none;color:var(--muted);font-size:16px;font-weight:600;padding:13px 2px 11px;position:relative;cursor:pointer}
+.tabs button{flex:1;max-width:136px;border:0;background:none;color:var(--muted);font-size:15px;font-weight:600;padding:13px 2px 11px;position:relative;cursor:pointer}
 .tabs button.on{color:var(--accent)}
 .tabs button.on::before{content:"";position:absolute;top:0;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
 .badge{display:inline-block;min-width:18px;padding:0 5px;margin-left:3px;border-radius:9px;background:var(--r);color:#fff;font:600 12px/18px -apple-system,BlinkMacSystemFont,sans-serif;vertical-align:1px}
@@ -104,6 +104,32 @@ h2{font-size:21px;font-weight:700;margin:0 0 10px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kpi.f b{color:var(--y)}}
 :root[data-theme="dark"] .kpi.f b{color:var(--y)}
 .kpi.zero b{color:var(--muted)}
+.focus{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px 6px;margin-bottom:16px}
+.fitem{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:11px 0;font:inherit;font-weight:600;color:var(--ink);cursor:pointer}
+.sd{display:inline-block;flex:0 0 12px;width:12px;height:12px;border-radius:50%;background:var(--g)}
+.sd.s-y{background:var(--y)}.sd.s-r{background:var(--r)}
+.fnot{font-size:14px;color:var(--muted);border-top:1px solid var(--line);margin:0;padding:10px 0 8px}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line);color:var(--ink);font-weight:500;font-size:16px;margin:0}
+.chk input{width:22px;height:22px;margin:2px 0 0;flex:0 0 auto}
+.goals{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.grow{display:grid;grid-template-columns:minmax(0,1fr) 72px 28px;gap:10px;align-items:center;width:100%;padding:12px 14px;border:0;border-top:1px solid var(--line);background:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+.grow:first-child{border-top:0}
+.gt{font-weight:600;overflow-wrap:anywhere}
+.gbar{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}
+.gbar i{display:block;height:100%;background:var(--accent)}
+.grow.none .gt{color:var(--muted);font-weight:500}.grow.none .gbar i{background:var(--muted)}
+.gn{text-align:right;color:var(--muted);font-size:15px}
+.pname{font-size:30px;margin:4px 0 2px;overflow-wrap:anywhere}
+.ptadd{display:flex;gap:8px;margin-bottom:10px}
+.ptadd input[type=text]{margin:0;flex:1;background:var(--panel)}
+.pts{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.pt{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 12px;border-top:1px solid var(--line)}
+.pt:first-child{border-top:0}
+.pt span{flex:1;overflow-wrap:anywhere}
+.pt.done span{text-decoration:line-through;color:var(--muted)}
+.ptc{flex:0 0 30px;height:30px;border-radius:8px;border:2px solid var(--line);background:var(--bg);color:var(--accent-ink);font-weight:700;cursor:pointer;padding:0}
+.pt.done .ptc{background:var(--accent);border-color:var(--accent)}
+.ptx{border:0;background:none;color:var(--muted);font-size:24px;line-height:1;padding:6px 8px;cursor:pointer}
 .calbox .check{margin:10px 0 6px}
 .calbox p{margin:0}
 
@@ -181,6 +207,7 @@ details textarea{margin-bottom:10px}
 <nav class="tabs" aria-label="Bereiche">
   <button data-tab="lage">Lage</button>
   <button data-tab="themen">Themen</button>
+  <button data-tab="personen">1:1</button>
   <button data-tab="inbox">Inbox<span id="ibadge"></span></button>
   <button data-tab="review">Review</button>
   <button data-tab="daten">Daten</button>
@@ -198,12 +225,12 @@ const STALE=21;
 const ST={g:'Grün',y:'Gelb',r:'Rot'};
 const WAIT={none:'Nichts',decision:'Meine Entscheidung oder Freigabe',promise:'Meine Zusage',others:'Andere (intern oder extern)'};
 const REMIND=[[0,'Am Tag der Deadline'],[1,'1 Tag vorher'],[3,'3 Tage vorher'],[7,'1 Woche vorher'],[14,'2 Wochen vorher']];
-const TITLES={lage:'Lage',themen:'Themen',inbox:'Inbox',review:'Review',daten:'Daten'};
+const TITLES={lage:'Lage',themen:'Themen',personen:'1:1-Gespräche',inbox:'Inbox',review:'Review',daten:'Daten'};
 
 let S=load();
-let view='lage', teamFilter='Alle', personFilter='Alle', kpiFilter=null, showArchived=false, rv=null, edit=null, pending=null;
+let view='lage', teamFilter='Alle', personFilter='Alle', kpiFilter=null, personSel=null, showArchived=false, rv=null, edit=null, pending=null;
 
-function blank(){return{topics:[],inbox:[],lastReview:null,lastExport:null,teams:DEFAULT_TEAMS.slice()}}
+function blank(){return{topics:[],inbox:[],lastReview:null,lastExport:null,teams:DEFAULT_TEAMS.slice(),people:{},focus:null,goals:[]}}
 function load(){
   try{
     localStorage.setItem('__tc','1');localStorage.removeItem('__tc');
@@ -219,7 +246,10 @@ function normalize(d){
     inbox:Array.isArray(d.inbox)?d.inbox.filter(n=>n&&n.id):[],
     lastReview:d.lastReview||b.lastReview,
     lastExport:d.lastExport||b.lastExport,
-    teams:(Array.isArray(d.teams)?d.teams.map(x=>String(x).trim()).filter(Boolean):[]).length?d.teams.map(x=>String(x).trim()).filter(Boolean):b.teams
+    teams:(Array.isArray(d.teams)?d.teams.map(x=>String(x).trim()).filter(Boolean):[]).length?d.teams.map(x=>String(x).trim()).filter(Boolean):b.teams,
+    people:d.people&&typeof d.people==='object'&&!Array.isArray(d.people)?d.people:{},
+    focus:d.focus&&d.focus.week?{week:d.focus.week,top:Array.isArray(d.focus.top)?d.focus.top:[],not:String(d.focus.not||'')}:null,
+    goals:Array.isArray(d.goals)?d.goals.filter(g=>g&&g.id&&g.title):[]
   };
 }
 function save(){
@@ -252,6 +282,7 @@ function flags(t){
   if(d!==null&&d>=STALE)f.push({k:'stale',l:d+' Tage ohne Bewegung'});
   if(t.waiting==='decision')f.push({k:'me',l:'Wartet auf deine Entscheidung'});
   if(t.waiting==='promise')f.push({k:'me',l:'Deine Zusage ist offen'});
+  if(t.followUp){const fn=daysUntil(t.followUp);if(fn<=0)f.push({k:'me',l:fn===0?'Heute nachfassen':'Nachfassen seit '+(-fn)+(fn===-1?' Tag':' Tagen')})}
   return f;
 }
 function who(t){return t.owner?esc(t.owner)+' ('+esc(t.team)+')':esc(t.team)}
@@ -263,6 +294,7 @@ function item(t){
   if(t.deadline)meta+=', Deadline '+fmt(t.deadline);
   if(t.due)meta+=', Meilenstein '+fmt(t.due);
   if(t.waiting==='others'&&t.waitNote)meta+=', wartet auf '+esc(t.waitNote);
+  if(t.followUp)meta+=', nachfassen '+fmt(t.followUp);
   return '<button class="item" data-act="open" data-id="'+t.id+'"><span class="bar s-'+t.status+'"></span><span class="ib">'+
     '<span class="it">'+esc(t.title)+'</span><span class="im">'+meta+'</span>'+
     (t.next?'<span class="in">Nächster Schritt: '+esc(t.next)+'</span>':'<span class="in miss">Kein nächster Schritt festgelegt</span>')+
@@ -276,7 +308,7 @@ function offlineState(){
   if(navigator.serviceWorker.controller)return'Offline bereit: Die App startet auch ohne Internet.';
   return'Offline noch nicht eingerichtet. Öffne die App einmal mit Internet, schließe sie und starte sie neu.';
 }
-function kpiSets(a){return{r:a.filter(t=>t.status==='r'),fr:a.filter(t=>{const n=daysUntil(t.deadline);return n!==null&&n<=14}),me:a.filter(t=>t.waiting==='decision'||t.waiting==='promise')}}
+function kpiSets(a){return{r:a.filter(t=>t.status==='r'),fr:a.filter(t=>{const n=daysUntil(t.deadline);return n!==null&&n<=14}),me:a.filter(isMine)}}
 function storageWarn(){return storageOk?'':'<div class="warnbox"><strong>Speicher nicht verfügbar.</strong> Dieser Browser erlaubt kein dauerhaftes Speichern. Öffne die App über den Home-Bildschirm oder in Safari ohne privaten Modus.</div>'}
 
 /* ---------- Ansichten ---------- */
@@ -285,6 +317,9 @@ function vLage(){
   let h=storageWarn();
   if(!a.length&&!S.inbox.length)return h+empty('Noch keine Themen','Lege dein erstes Thema an oder notiere kurz, was gerade ansteht. Einsortieren kannst du später. Eigene Teamnamen vergibst du unter „Daten“.','<button class="btn pri" data-act="new">Thema anlegen</button><button class="btn" data-act="quick">Notiz erfassen</button>');
   if(a.length){const k=kpiSets(a);h+='<div class="kpis">'+[['r','r','kritisch'],['fr','f','Fristen'],['me','m','bei dir']].map(x=>'<button class="kpi '+x[1]+(k[x[0]].length?'':' zero')+'" data-act="kpi" data-k="'+x[0]+'" aria-label="'+k[x[0]].length+' '+x[2]+', Liste anzeigen"><b>'+k[x[0]].length+'</b><span>'+x[2]+'</span></button>').join('')+'</div>'}
+  if(a.length){const wk=weekKey();const fo=S.focus&&S.focus.week===wk.key?S.focus:null;const ft=fo?fo.top.map(id=>S.topics.find(t=>t.id===id)).filter(Boolean):[];
+    if(fo&&(ft.length||fo.not))h+='<section class="focus"><div class="row-actions" style="margin-bottom:4px"><h2 style="margin:0">Fokus KW '+wk.w+'</h2><button class="link" data-act="focusEdit">Ändern</button></div>'+ft.map(t=>'<button class="fitem" data-act="open" data-id="'+t.id+'"><span class="sd s-'+t.status+'"></span><span>'+esc(t.title)+(t.archived?' <span class="im">(erledigt)</span>':'')+'</span></button>').join('')+(fo.not?'<p class="fnot"><strong>Nicht diese Woche:</strong> '+esc(fo.not)+'</p>':'')+'</section>';
+    else h+='<button class="inbox-hint" data-act="focusEdit">Wochenfokus für KW '+wk.w+' festlegen</button>';}
   const rd=days(S.lastReview);
   if(a.length&&(rd===null||rd>=7))h+='<section class="notice"><div><strong>Wochen-Review fällig</strong><p>'+(rd===null?'Noch kein Review abgeschlossen.':'Letztes Review '+rel(S.lastReview)+'.')+' '+a.length+' Themen, etwa '+minutes(a.length)+' Minuten.</p></div><button class="btn pri" data-act="go" data-v="review">Starten</button></section>';
   if(S.inbox.length)h+='<button class="inbox-hint" data-act="go" data-v="inbox">'+S.inbox.length+(S.inbox.length===1?' Notiz wartet':' Notizen warten')+' in der Inbox aufs Einsortieren</button>';
@@ -298,19 +333,31 @@ function vLage(){
     }
     h+='</div><p class="legend"><span><i></i>läuft</span><span><i class="s-y"></i>Risiko</span><span><i class="s-r"></i>kritisch</span><span><i class="flag"></i>mit Warnung</span></p></section>';
   }
+  if(a.length&&S.goals.length){
+    const none=a.filter(t=>!S.goals.some(g=>g.id===t.goalId)).length;
+    const row=(id,title,n,cls)=>'<button class="grow'+cls+'" data-act="goalF" data-id="'+id+'"><span class="gt">'+title+'</span><span class="gbar"><i style="width:'+Math.round(n/a.length*100)+'%"></i></span><span class="gn">'+n+'</span></button>';
+    h+='<section class="block"><h2>Jahresziele</h2><div class="goals">'+S.goals.map(g=>row(g.id,esc(g.title),a.filter(t=>t.goalId===g.id).length,'')).join('')+(none?row('none','Ohne Jahresziel',none,' none'):'')+'</div><p class="legend">Anteil deiner aktiven Themen je Ziel</p></section>';
+  }
   const fr=a.filter(t=>{const n=daysUntil(t.deadline);return n!==null&&n<=14}).sort((x,y)=>x.deadline.localeCompare(y.deadline));
   if(fr.length)h+=sect('Fristen in den nächsten 14 Tagen',fr);
-  const me=a.filter(t=>!fr.includes(t)&&(t.waiting==='decision'||t.waiting==='promise')).sort(bySev);
+  const me=a.filter(t=>!fr.includes(t)&&isMine(t)).sort(bySev);
   if(me.length)h+=sect('Wartet auf dich',me);
   const warn=a.filter(t=>!me.includes(t)&&!fr.includes(t)&&(t.status==='r'||flags(t).length)).sort(bySev);
   if(warn.length)h+=sect('Achtung',warn);
   if(a.length&&!fr.length&&!me.length&&!warn.length)h+='<p class="calm">Keine Warnungen. Alle Themen sind in Bewegung.</p>';
+  if(a.length)h+='<button class="btn wide" data-act="report" style="margin-bottom:16px">Statusbericht erstellen</button>';
   const ed=days(S.lastExport);
   if(a.length&&(ed===null||ed>=14))h+='<section class="notice soft"><div><strong>Sicherung empfohlen</strong><p>'+(ed===null?'Noch keine Sicherung erstellt.':'Letzte Sicherung '+rel(S.lastExport)+'.')+' Die Daten liegen nur auf diesem Gerät.</p></div><button class="btn" data-act="export">Sichern</button></section>';
   return h;
 }
 
 function vThemen(){
+  if(kpiFilter&&kpiFilter.indexOf('goal:')===0){
+    const gid=kpiFilter.slice(5);const g=S.goals.find(x=>x.id===gid);
+    const lbl=gid==='none'?'Themen ohne Jahresziel':(g?esc(g.title):'Jahresziel');
+    const list=active().filter(t=>gid==='none'?!S.goals.some(x=>x.id===t.goalId):t.goalId===gid).sort(bySev);
+    return '<div class="row-actions"><h2 style="margin:0">'+lbl+'</h2><button class="link" data-act="kpiClear">Alle Themen</button></div>'+(list.length?'<div class="list">'+list.map(item).join('')+'</div>':'<p class="calm">Diesem Ziel sind gerade keine aktiven Themen zugeordnet.</p>');
+  }
   if(kpiFilter){
     const lbl={r:'Kritische Themen',fr:'Fristen in den nächsten 14 Tagen',me:'Themen, die auf dich warten'}[kpiFilter];
     const list=(kpiSets(active())[kpiFilter]||[]).slice().sort(kpiFilter==='fr'?(x,y)=>x.deadline.localeCompare(y.deadline):bySev);
@@ -326,6 +373,57 @@ function vThemen(){
   list.sort(bySev);
   if(!list.length)return h+'<p class="calm">'+(showArchived?'Noch keine erledigten Themen.':'Hier gibt es noch keine aktiven Themen.')+'</p>';
   return h+'<div class="list">'+list.map(item).join('')+'</div>';
+}
+
+function weekKey(){const d=new Date();const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-day);const y=t.getUTCFullYear();const w=Math.ceil(((t-Date.UTC(y,0,1))/864e5+1)/7);return{key:y+'-W'+w,w:w,y:y}}
+function isMine(t){return t.waiting==='decision'||t.waiting==='promise'||(!!t.followUp&&t.followUp<=today())}
+function fmtTs(ts){const d=new Date(ts);return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getFullYear()).slice(2)}
+function hasPerson(n){return Object.prototype.hasOwnProperty.call(S.people,n)}
+function ensurePerson(n){if(!hasPerson(n))S.people[n]={points:[],last:null,log:[]};const p=S.people[n];if(!Array.isArray(p.points))p.points=[];if(!Array.isArray(p.log))p.log=[];return p}
+function personNames(){const s=new Set();active().forEach(t=>{if(t.owner)s.add(t.owner)});Object.keys(S.people).forEach(n=>s.add(n));return[...s].sort((x,y)=>x.localeCompare(y,'de'))}
+function copyText(id){const ta=document.getElementById(id);if(!ta)return;const sel=()=>{ta.focus();ta.select();toast('Text ist markiert. Tippe auf Kopieren.')};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(ta.value).then(()=>toast('Kopiert.'),sel);else sel()}
+function buildReport(team,names){
+  const a=active().filter(t=>!team||t.team===team);
+  const wk=weekKey(), ico={r:'🔴',y:'🟡',g:'🟢'}, td=today();
+  const nm=t=>names&&t.owner?' ('+t.owner+')':'';
+  const L=['Statusbericht KW '+wk.w+'/'+wk.y+(team?', '+team:''),'Stand '+fmt(td),''];
+  L.push(a.length+' aktive Themen: '+a.filter(t=>t.status==='r').length+' rot, '+a.filter(t=>t.status==='y').length+' gelb, '+a.filter(t=>t.status==='g').length+' grün');
+  const risk=a.filter(t=>t.status==='r'||(t.deadline&&t.deadline<td)||(t.due&&t.due<td)).sort(bySev);
+  if(risk.length){L.push('','Risiken und Eskalationen');risk.forEach(t=>L.push('• '+t.title+nm(t)+(t.next?': '+t.next:'')))}
+  (team?[team]:teamsUsed()).forEach(tm=>{const ts=a.filter(t=>t.team===tm).sort(bySev);if(!ts.length)return;L.push('',tm);ts.forEach(t=>{L.push(ico[t.status]+' '+t.title+nm(t));const d=[];if(t.next)d.push('Nächster Schritt: '+t.next);if(t.deadline)d.push('Deadline '+fmt(t.deadline));else if(t.due)d.push('Meilenstein '+fmt(t.due));if(d.length)L.push('    '+d.join(', '))})});
+  const since=Date.now()-14*864e5;
+  const done=S.topics.filter(t=>t.archived&&(t.updatedAt||0)>=since&&(!team||t.team===team));
+  if(done.length){L.push('','Erledigt in den letzten 14 Tagen');done.forEach(t=>L.push('✓ '+t.title+(team?'':' ('+t.team+')')))}
+  if(S.goals.length&&a.length){L.push('','Themen je Jahresziel');S.goals.forEach(g=>L.push('• '+g.title+': '+a.filter(t=>t.goalId===g.id).length));const none=a.filter(t=>!S.goals.some(g=>g.id===t.goalId)).length;if(none)L.push('• ohne Jahresziel: '+none)}
+  return L.join('\n');
+}
+function vPersonen(){
+  if(personSel){
+    const n=personSel;
+    const p=hasPerson(n)?ensurePerson(n):{points:[],last:null,log:[]};
+    const ts=active().filter(t=>t.owner===n).sort(bySev);
+    const teams=[...new Set(ts.map(t=>t.team))];
+    let h='<button class="link" data-act="personBack">Alle Personen</button>';
+    h+='<h2 class="pname">'+esc(n)+'</h2><p class="im" style="margin:0 0 18px">'+(teams.length?esc(teams.join(', '))+', ':'')+(p.last?'letztes Gespräch '+rel(p.last):'noch kein Gespräch festgehalten')+'</p>';
+    h+='<section class="block"><h2>Gesprächspunkte</h2><div class="ptadd"><input type="text" id="pt-new" placeholder="Was willst du ansprechen?" aria-label="Neuer Gesprächspunkt"><button class="btn pri sm" data-act="ptAdd">Hinzufügen</button></div>';
+    h+=p.points.length?'<div class="pts">'+p.points.map(x=>'<div class="pt'+(x.done?' done':'')+'"><button class="ptc" data-act="ptToggle" data-id="'+x.id+'" role="checkbox" aria-checked="'+(!!x.done)+'" aria-label="Besprochen">'+(x.done?'✓':'')+'</button><span>'+esc(x.text)+'</span><button class="ptx" data-act="ptDel" data-id="'+x.id+'" aria-label="Punkt löschen">×</button></div>').join('')+'</div>':'<p class="calm">Sammle hier über die Woche, was du im nächsten Gespräch ansprechen willst.</p>';
+    h+='</section>';
+    if(ts.length)h+=sect('Themen von '+esc(n),ts);
+    h+='<section class="block"><h2>Gespräch abschließen</h2><label>Notiz zum Gespräch (optional)<textarea id="mt-note" rows="3" placeholder="Vereinbarungen, Eindrücke, nächste Schritte"></textarea></label><button class="btn pri wide" data-act="meetDone">Gespräch abschließen</button><p class="im" style="margin-top:8px">Abgehakte Punkte wandern in den Verlauf, offene bleiben für das nächste Gespräch stehen.</p></section>';
+    if(p.log.length)h+='<section class="block"><h2>Verlauf</h2>'+p.log.slice(0,10).map(l=>'<div class="note"><span class="im">'+fmtTs(l.at)+'</span>'+(l.text?'<p>'+esc(l.text).replace(/\n/g,'<br>')+'</p>':'')+(l.points&&l.points.length?'<p class="im">Besprochen: '+l.points.map(esc).join('; ')+'</p>':'')+'</div>').join('')+'</section>';
+    if(!ts.length)h+='<button class="btn ghost red sm" data-act="personDel">Person aus der Liste entfernen</button>';
+    return h;
+  }
+  const names=personNames();
+  let h='<div class="row-actions"><span class="im">'+names.length+(names.length===1?' Person':' Personen')+'</span><button class="btn pri sm" data-act="personAdd">Person hinzufügen</button></div>';
+  if(!names.length)return h+'<p class="calm">Personen erscheinen hier, sobald du bei einem Thema jemanden als verantwortlich einträgst.</p>';
+  return h+'<div class="list">'+names.map(n=>{
+    const p=hasPerson(n)?S.people[n]:null;
+    const ts=active().filter(t=>t.owner===n).sort(bySev);
+    const open=p&&Array.isArray(p.points)?p.points.filter(x=>!x.done).length:0;
+    const teams=[...new Set(ts.map(t=>t.team))];
+    return '<button class="item" data-act="person" data-name="'+esc(n)+'"><span class="bar s-'+(ts.length?ts[0].status:'g')+'"'+(ts.length?'':' style="background:var(--line)"')+'></span><span class="ib"><span class="it">'+esc(n)+'</span><span class="im">'+(teams.length?esc(teams.join(', '))+', ':'')+ts.length+(ts.length===1?' Thema':' Themen')+(open?', '+open+(open===1?' offener Punkt':' offene Punkte'):'')+'</span><span class="im">'+(p&&p.last?'Letztes Gespräch '+rel(p.last):'Noch kein Gespräch festgehalten')+'</span></span></button>';
+  }).join('')+'</div>';
 }
 
 function vInbox(){
@@ -348,7 +446,7 @@ function vReview(){
   }
   if(rv.i>=rv.q.length){
     const b=active();
-    return '<section class="empty"><h2>Review abgeschlossen</h2><p>'+rv.changed.size+' Themen aktualisiert, '+rv.done+' als erledigt abgelegt. Jetzt '+b.filter(t=>t.status==='r').length+' rot und '+b.filter(t=>t.status==='y').length+' gelb.</p><div class="btns"><button class="btn pri" data-act="rvClose">Zum Lagebild</button></div></section>';
+    return '<section class="empty"><h2>Review abgeschlossen</h2><p>'+rv.changed.size+' Themen aktualisiert, '+rv.done+' als erledigt abgelegt. Jetzt '+b.filter(t=>t.status==='r').length+' rot und '+b.filter(t=>t.status==='y').length+' gelb.</p><div class="btns"><button class="btn pri" data-act="focusEdit">Wochenfokus festlegen</button><button class="btn" data-act="report">Statusbericht</button><button class="btn ghost" data-act="rvClose">Zum Lagebild</button></div></section>';
   }
   const t=S.topics.find(x=>x.id===rv.q[rv.i]);
   if(!t){rv.i++;return vReview()}
@@ -361,6 +459,7 @@ function vReview(){
     '<label>Nächster Schritt<textarea id="r-next" rows="2" placeholder="Was passiert als Nächstes, und wer macht es?">'+esc(t.next)+'</textarea></label>'+
     '<label>Nächster Meilenstein<input type="date" id="r-due" value="'+esc(t.due||'')+'"></label>'+
     '<label>Wartet auf<select id="r-wait">'+waitOpts(t.waiting||'none')+'</select></label>'+
+    '<label>Nachfassen am<input type="date" id="r-follow" value="'+esc(t.followUp||'')+'"></label>'+
     '<label class="check"><input type="checkbox" id="r-prog"> Seit dem letzten Review gab es Fortschritt</label>'+
     '<div class="rv-acts"><button class="btn" data-act="rvPrev"'+(rv.i===0?' disabled':'')+'>Zurück</button><button class="btn pri" data-act="rvNext">Weiter</button></div>'+
     '<div class="row-actions" style="margin-top:6px"><button class="link" data-act="rvDone">Thema ist erledigt</button><button class="link" data-act="rvStop">Review beenden</button></div></section>';
@@ -372,6 +471,7 @@ function vDaten(){
   '<section class="block"><h2>Sicherung</h2><p>Alle Inhalte liegen ausschließlich im Speicher dieses Geräts. Nichts wird an einen Server gesendet. Erstelle regelmäßig eine Sicherung und lege sie in der Dateien-App unter „Auf meinem iPhone“ ab.</p><p class="im">'+(S.lastExport?'Letzte Sicherung '+rel(S.lastExport)+'.':'Noch keine Sicherung erstellt.')+'</p><button class="btn pri wide" data-act="export">Sicherung erstellen</button></section>'+
   '<section class="block"><h2>Wiederherstellen</h2><p>Lädt eine Sicherungsdatei und ersetzt alle aktuellen Daten auf diesem Gerät.</p><label class="btn wide file">Sicherungsdatei wählen<input type="file" id="imp-file" accept=".json,application/json"></label><details><summary>Oder Text einfügen</summary><textarea id="imp-text" rows="4" placeholder="Inhalt der Sicherung hier einfügen"></textarea><button class="btn" data-act="impText">Aus Text wiederherstellen</button></details></section>'+
   '<section class="block"><h2>Teams</h2><p>'+S.teams.map(esc).join(', ')+'</p><button class="btn" data-act="teamsEdit">Teams bearbeiten</button></section>'+
+  '<section class="block"><h2>Jahresziele</h2><p>'+(S.goals.length?S.goals.map(g=>esc(g.title)).join(', '):'Noch keine Jahresziele angelegt. Mit Zielen siehst du in der Lage, wie sich deine Themen darauf verteilen.')+'</p><button class="btn" data-act="goalsEdit">Jahresziele bearbeiten</button></section>'+
   '<section class="block"><h2>Auf dem iPhone nutzen</h2><p>Öffne diese Seite in Safari, tippe auf Teilen und dann auf „Zum Home-Bildschirm“. So startet das Cockpit wie eine App, und iOS behält die Daten dauerhaft.</p><p class="im">'+offlineState()+'</p></section>'+
   '<section class="block"><h2>Bestand</h2><p>'+a+' aktive Themen, '+ar+' erledigt, '+S.inbox.length+' Inbox-Notizen.</p><button class="btn ghost red" data-act="wipe">Alle Daten auf diesem Gerät löschen</button></section>';
 }
@@ -380,7 +480,7 @@ function render(){
   $('#vtitle').textContent=TITLES[view];
   document.querySelectorAll('.tabs button').forEach(b=>{const on=b.dataset.tab===view;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   $('#ibadge').innerHTML=S.inbox.length?'<span class="badge">'+S.inbox.length+'</span>':'';
-  const fn={lage:vLage,themen:vThemen,inbox:vInbox,review:vReview,daten:vDaten}[view];
+  const fn={lage:vLage,themen:vThemen,personen:vPersonen,inbox:vInbox,review:vReview,daten:vDaten}[view];
   $('#main').innerHTML=fn();
 }
 function go(v){view=v;render();window.scrollTo(0,0)}
@@ -395,7 +495,7 @@ function toast(m){const el=$('#toast');el.textContent=m;el.classList.add('show')
 
 function openEditor(id,prefill,fromNote){
   const ex=id?S.topics.find(x=>x.id===id):null;
-  const t=ex||Object.assign({title:'',team:teamFilter!=='Alle'?teamFilter:S.teams[0],goal:'',status:'g',next:'',due:'',owner:'',deadline:'',remind:3,waiting:'none',waitNote:'',notes:''},prefill||{});
+  const t=ex||Object.assign({title:'',team:teamFilter!=='Alle'?teamFilter:S.teams[0],goal:'',status:'g',next:'',due:'',owner:'',deadline:'',remind:3,followUp:'',goalId:'',waiting:'none',waitNote:'',notes:''},prefill||{});
   edit={id:id||null,fromNote:fromNote||null};
   const teams=S.teams.includes(t.team)?S.teams:S.teams.concat([t.team]);
   sheet('<h2>'+(id?'Thema bearbeiten':'Neues Thema')+'</h2>'+
@@ -403,6 +503,7 @@ function openEditor(id,prefill,fromNote){
     '<label>Verantwortliches Team<select id="f-team">'+teams.map(tm=>'<option'+(tm===t.team?' selected':'')+'>'+esc(tm)+'</option>').join('')+'</select></label>'+
     '<label>Verantwortlich im Team<input type="text" id="f-owner" list="owner-list" value="'+esc(t.owner||'')+'" placeholder="Name der Person" autocomplete="off"></label><datalist id="owner-list">'+[...new Set(S.topics.map(x=>x.owner).filter(Boolean))].sort((x,y)=>x.localeCompare(y,'de')).map(o=>'<option value="'+esc(o)+'">').join('')+'</datalist>'+
     '<label>Ziel in einem Satz<input type="text" id="f-goal" value="'+esc(t.goal)+'" placeholder="Woran erkennst du, dass es erledigt ist?"></label>'+
+    (S.goals.length?'<label>Zahlt ein auf Jahresziel<select id="f-goalid"><option value="">Keins</option>'+S.goals.map(g=>'<option value="'+g.id+'"'+(t.goalId===g.id?' selected':'')+'>'+esc(g.title)+'</option>').join('')+'</select></label>':'')+
     '<fieldset><legend>Status</legend>'+segHtml('f-status',t.status)+'</fieldset>'+
     '<label>Nächster Schritt<textarea id="f-next" rows="2" placeholder="Was passiert als Nächstes, und wer macht es?">'+esc(t.next)+'</textarea></label>'+
     '<label>Nächster Meilenstein<input type="date" id="f-due" value="'+esc(t.due||'')+'"></label>'+
@@ -412,6 +513,7 @@ function openEditor(id,prefill,fromNote){
     '<div class="calbox"><button type="button" class="btn sm" data-act="cal">In iPhone-Kalender eintragen</button><label class="check"><input type="checkbox" id="f-calname"> Thementitel im Kalender anzeigen</label><p class="im">Ohne Haken steht im Kalender nur „Frist im Themen-Cockpit“. So erscheint kein Inhalt im Kalender, auch wenn er synchronisiert wird.</p></div>'+
     '<label>Wartet auf<select id="f-wait">'+waitOpts(t.waiting||'none')+'</select></label>'+
     '<label>Details dazu<input type="text" id="f-waitnote" value="'+esc(t.waitNote)+'" placeholder="z. B. Budgetfreigabe, Rückmeldung Dienstleister"></label>'+
+    '<label>Nachfassen am<input type="date" id="f-follow" value="'+esc(t.followUp||'')+'"></label>'+
     '<label>Notizen<textarea id="f-notes" rows="4">'+esc(t.notes)+'</textarea></label>'+
     (ex?'<p class="im">Angelegt '+rel(ex.created)+', letzte Bewegung '+rel(ex.progressAt)+'.</p>':'')+
     '<div class="sheet-acts"><button class="btn pri" data-act="saveTopic">Speichern</button><button class="btn ghost" data-act="close">Abbrechen</button></div>'+
@@ -422,7 +524,8 @@ function saveTopic(){
   const title=val('f-title').trim();
   if(!title){toast('Gib dem Thema einen Titel.');$('#f-title').focus();return}
   const on=document.querySelector('#f-status .on');
-  const d={title:title,team:val('f-team'),goal:val('f-goal').trim(),status:on?on.dataset.val:'g',next:val('f-next').trim(),due:val('f-due'),waiting:val('f-wait'),waitNote:val('f-waitnote').trim(),notes:val('f-notes'),owner:val('f-owner').trim(),deadline:val('f-deadline'),remind:+val('f-remind'),remindTime:val('f-rtime')||'09:00'};
+  const d={title:title,team:val('f-team'),goal:val('f-goal').trim(),status:on?on.dataset.val:'g',next:val('f-next').trim(),due:val('f-due'),waiting:val('f-wait'),waitNote:val('f-waitnote').trim(),notes:val('f-notes'),owner:val('f-owner').trim(),deadline:val('f-deadline'),remind:+val('f-remind'),remindTime:val('f-rtime')||'09:00',followUp:val('f-follow')};
+  if(document.getElementById('f-goalid'))d.goalId=val('f-goalid');
   const now=Date.now();
   if(edit&&edit.id){
     const t=S.topics.find(x=>x.id===edit.id);
@@ -439,10 +542,10 @@ function rvApply(){
   if(!rv||rv.i>=rv.q.length)return null;
   const t=S.topics.find(x=>x.id===rv.q[rv.i]);if(!t)return null;
   const on=document.querySelector('#r-status .on');
-  const st=on?on.dataset.val:t.status, nx=val('r-next').trim(), du=val('r-due'), wt=val('r-wait');
+  const st=on?on.dataset.val:t.status, nx=val('r-next').trim(), du=val('r-due'), wt=val('r-wait'), fu=val('r-follow');
   const prog=document.getElementById('r-prog');
-  const changed=st!==t.status||nx!==(t.next||'')||du!==(t.due||'')||wt!==(t.waiting||'none');
-  if(changed||(prog&&prog.checked)){Object.assign(t,{status:st,next:nx,due:du,waiting:wt,updatedAt:Date.now(),progressAt:Date.now()});rv.changed.add(t.id)}
+  const changed=st!==t.status||nx!==(t.next||'')||du!==(t.due||'')||wt!==(t.waiting||'none')||fu!==(t.followUp||'');
+  if(changed||(prog&&prog.checked)){Object.assign(t,{status:st,next:nx,due:du,waiting:wt,followUp:fu,updatedAt:Date.now(),progressAt:Date.now()});rv.changed.add(t.id)}
   save();return t;
 }
 function rvFinishIfDone(){if(rv&&rv.i>=rv.q.length){S.lastReview=Date.now();save()}}
@@ -546,6 +649,24 @@ const A={
     try{const u=URL.createObjectURL(new Blob([ics],{type:'text/calendar;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='frist.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),10000);toast('Kalendereintrag erstellt. Bestätige mit „Hinzufügen“.')}
     catch(e){toast('Der Kalendereintrag konnte nicht erstellt werden.')}
   },
+  person:b=>{personSel=b.dataset.name;render();window.scrollTo(0,0)},
+  personBack:()=>{personSel=null;render();window.scrollTo(0,0)},
+  personAdd:()=>sheet('<h2>Person hinzufügen</h2><label>Name<input type="text" id="pn-name" placeholder="Vor- und Nachname" autocomplete="off" data-focus></label><div class="sheet-acts"><button class="btn pri" data-act="personSave">Hinzufügen</button><button class="btn ghost" data-act="close">Abbrechen</button></div>'),
+  personSave:()=>{const n=val('pn-name').trim();if(!n){toast('Gib einen Namen ein.');return}if(n==='__proto__'||n==='constructor'){toast('Dieser Name ist nicht möglich.');return}ensurePerson(n);save();closeSheet();personSel=n;go('personen')},
+  ptAdd:()=>{const t=val('pt-new').trim();if(!t){toast('Der Punkt ist leer.');return}ensurePerson(personSel).points.push({id:uid(),text:t,at:Date.now(),done:false});save();render();const i=$('#pt-new');if(i)i.focus()},
+  ptToggle:b=>{if(!hasPerson(personSel))return;const x=S.people[personSel].points.find(y=>y.id===b.dataset.id);if(x){x.done=!x.done;save();render()}},
+  ptDel:b=>{if(!hasPerson(personSel))return;const p=S.people[personSel];p.points=p.points.filter(y=>y.id!==b.dataset.id);save();render()},
+  meetDone:()=>{const p=ensurePerson(personSel);const note=val('mt-note').trim();const done=p.points.filter(x=>x.done);p.log.unshift({at:Date.now(),text:note,points:done.map(x=>x.text)});p.log=p.log.slice(0,30);p.points=p.points.filter(x=>!x.done);p.last=Date.now();save();render();window.scrollTo(0,0);toast('Gespräch festgehalten.')},
+  personDel:()=>confirmSheet('Person entfernen?','Gesprächspunkte und Verlauf von '+esc(personSel)+' werden gelöscht.','Entfernen',()=>{delete S.people[personSel];personSel=null;save();closeSheet();render()}),
+  focusEdit:()=>{const a=active();if(!a.length){toast('Lege zuerst Themen an.');return}const wk=weekKey();const f=S.focus&&S.focus.week===wk.key?S.focus:{top:[],not:''};sheet('<h2>Fokus KW '+wk.w+'</h2><p class="im">Wähle bis zu drei Themen, die diese Woche deine Aufmerksamkeit bekommen.</p><div>'+a.sort(bySev).map(t=>'<label class="chk"><input type="checkbox" class="fchk" value="'+t.id+'"'+(f.top.includes(t.id)?' checked':'')+'><span><span class="sd s-'+t.status+'"></span> '+esc(t.title)+'<br><span class="im">'+who(t)+'</span></span></label>').join('')+'</div><label style="margin-top:14px">Nicht diese Woche<textarea id="f-not" rows="3" placeholder="Was lässt du bewusst liegen?">'+esc(f.not)+'</textarea></label><div class="sheet-acts"><button class="btn pri" data-act="focusSave">Speichern</button><button class="btn ghost" data-act="close">Abbrechen</button></div>')},
+  focusSave:()=>{const top=[...document.querySelectorAll('.fchk:checked')].map(x=>x.value).slice(0,3);S.focus={week:weekKey().key,top:top,not:val('f-not').trim()};save();closeSheet();render();toast('Wochenfokus gespeichert.')},
+  report:()=>{const opts=teamsUsed().filter(tm=>active().some(t=>t.team===tm));sheet('<h2>Statusbericht</h2><label>Umfang<select id="rep-team"><option value="">Alle Teams</option>'+opts.map(tm=>'<option value="'+esc(tm)+'">'+esc(tm)+'</option>').join('')+'</select></label><label class="check" style="margin-bottom:12px"><input type="checkbox" id="rep-names" checked> Verantwortliche nennen</label><textarea id="rep-text" rows="14" readonly>'+esc(buildReport('',true))+'</textarea><p class="im" style="margin-top:8px">Der Text verlässt das Gerät erst, wenn du ihn selbst einfügst oder teilst.</p><div class="sheet-acts"><button class="btn pri" data-act="repCopy">Kopieren</button>'+(navigator.share&&window.self===window.top?'<button class="btn" data-act="repShare">Teilen</button>':'')+'<button class="btn ghost" data-act="close">Schließen</button></div>')},
+  repCopy:()=>copyText('rep-text'),
+  repShare:()=>{navigator.share({title:'Statusbericht',text:val('rep-text')}).catch(()=>{})},
+  goalF:b=>{kpiFilter='goal:'+b.dataset.id;showArchived=false;go('themen')},
+  goalsEdit:()=>{sheet('<h2>Jahresziele</h2><p class="im">Ein leeres Feld entfernt das Ziel. Zugeordnete Themen verlieren dann ihre Zuordnung.</p><div id="goal-list">'+S.goals.map(g=>'<input type="text" data-id="'+g.id+'" value="'+esc(g.title)+'" style="margin-bottom:8px" aria-label="Jahresziel">').join('')+'</div><button class="btn sm" data-act="goalAdd">Ziel hinzufügen</button><div class="sheet-acts" style="margin-top:16px"><button class="btn pri" data-act="goalSave">Speichern</button><button class="btn ghost" data-act="close">Abbrechen</button></div>');if(!S.goals.length)A.goalAdd()},
+  goalAdd:()=>{const inp=document.createElement('input');inp.type='text';inp.placeholder='z. B. Kundenzufriedenheit steigern';inp.style.marginBottom='8px';inp.setAttribute('aria-label','Neues Jahresziel');$('#goal-list').appendChild(inp);inp.focus()},
+  goalSave:()=>{const next=[];document.querySelectorAll('#goal-list input').forEach(inp=>{const v=inp.value.trim();if(v)next.push({id:inp.dataset.id||uid(),title:v})});const ids=next.map(g=>g.id);S.topics.forEach(t=>{if(t.goalId&&!ids.includes(t.goalId))t.goalId=''});S.goals=next;save();closeSheet();render();toast('Jahresziele gespeichert.')},
   export:()=>doExport(),
   copyExp:()=>{const ta=$('#exp-text');if(!ta)return;const done=()=>toast('Kopiert.');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(done,()=>{ta.focus();ta.select();toast('Text ist markiert. Tippe auf Kopieren.')})}else{ta.focus();ta.select();toast('Text ist markiert. Tippe auf Kopieren.')}},
   impText:()=>{const t=val('imp-text').trim();if(!t){toast('Füge zuerst den Text der Sicherung ein.');return}importText(t)},
@@ -556,16 +677,19 @@ document.addEventListener('click',e=>{
   if(e.target===$('#sheet')){closeSheet();return}
   const b=e.target.closest('[data-act],[data-tab]');
   if(!b||b.disabled)return;
-  if(b.dataset.tab){if(b.dataset.tab!=='review'&&rv&&view==='review'){rvApply()}kpiFilter=null;go(b.dataset.tab);return}
+  if(b.dataset.tab){if(b.dataset.tab!=='review'&&rv&&view==='review'){rvApply()}kpiFilter=null;personSel=null;go(b.dataset.tab);return}
   const f=A[b.dataset.act];if(f){e.preventDefault();f(b,e)}
 });
 document.addEventListener('change',e=>{
+  const tg=e.target;
+  if(tg&&(tg.id==='rep-team'||tg.id==='rep-names')){const r=$('#rep-text');const c=$('#rep-names');if(r)r.value=buildReport(val('rep-team'),!!(c&&c.checked))}
+  if(tg&&tg.classList&&tg.classList.contains('fchk')&&tg.checked&&document.querySelectorAll('.fchk:checked').length>3){tg.checked=false;toast('Höchstens drei Themen pro Woche.')}
   if(e.target&&e.target.id==='imp-file'){
     const file=e.target.files&&e.target.files[0];if(!file)return;
     const r=new FileReader();r.onload=()=>importText(String(r.result));r.onerror=()=>toast('Die Datei konnte nicht gelesen werden.');r.readAsText(file);e.target.value='';
   }
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet();if(e.key==='Enter'&&e.target&&e.target.id==='pt-new'){e.preventDefault();A.ptAdd()}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&$('#sheet').hidden&&view!=='review')render()});
 
 if('serviceWorker' in navigator&&window.self===window.top&&location.protocol==='https:'){
