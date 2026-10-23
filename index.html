@@ -261,6 +261,12 @@ function item(t){
 }
 function sect(title,list){return '<section class="block"><h2>'+title+'</h2><div class="list">'+list.map(item).join('')+'</div></section>'}
 function empty(title,text,btns){return '<div class="empty"><h2>'+title+'</h2><p>'+text+'</p><div class="btns">'+btns+'</div></div>'}
+function offlineState(){
+  if(window.self!==window.top)return'Offline-Nutzung gibt es nur in der Version auf deinem Home-Bildschirm.';
+  if(!('serviceWorker' in navigator))return'Dieser Browser unterstützt keine Offline-Nutzung.';
+  if(navigator.serviceWorker.controller)return'Offline bereit: Die App startet auch ohne Internet.';
+  return'Offline noch nicht eingerichtet. Öffne die App einmal mit Internet, schließe sie und starte sie neu.';
+}
 function storageWarn(){return storageOk?'':'<div class="warnbox"><strong>Speicher nicht verfügbar.</strong> Dieser Browser erlaubt kein dauerhaftes Speichern. Öffne die App über den Home-Bildschirm oder in Safari ohne privaten Modus.</div>'}
 
 /* ---------- Ansichten ---------- */
@@ -350,7 +356,7 @@ function vDaten(){
   '<section class="block"><h2>Sicherung</h2><p>Alle Inhalte liegen ausschließlich im Speicher dieses Geräts. Nichts wird an einen Server gesendet. Erstelle regelmäßig eine Sicherung und lege sie in der Dateien-App unter „Auf meinem iPhone“ ab.</p><p class="im">'+(S.lastExport?'Letzte Sicherung '+rel(S.lastExport)+'.':'Noch keine Sicherung erstellt.')+'</p><button class="btn pri wide" data-act="export">Sicherung erstellen</button></section>'+
   '<section class="block"><h2>Wiederherstellen</h2><p>Lädt eine Sicherungsdatei und ersetzt alle aktuellen Daten auf diesem Gerät.</p><label class="btn wide file">Sicherungsdatei wählen<input type="file" id="imp-file" accept=".json,application/json"></label><details><summary>Oder Text einfügen</summary><textarea id="imp-text" rows="4" placeholder="Inhalt der Sicherung hier einfügen"></textarea><button class="btn" data-act="impText">Aus Text wiederherstellen</button></details></section>'+
   '<section class="block"><h2>Teams</h2><p>'+S.teams.map(esc).join(', ')+'</p><button class="btn" data-act="teamsEdit">Teams bearbeiten</button></section>'+
-  '<section class="block"><h2>Auf dem iPhone nutzen</h2><p>Öffne diese Seite in Safari, tippe auf Teilen und dann auf „Zum Home-Bildschirm“. So startet das Cockpit wie eine App, und iOS behält die Daten dauerhaft.</p></section>'+
+  '<section class="block"><h2>Auf dem iPhone nutzen</h2><p>Öffne diese Seite in Safari, tippe auf Teilen und dann auf „Zum Home-Bildschirm“. So startet das Cockpit wie eine App, und iOS behält die Daten dauerhaft.</p><p class="im">'+offlineState()+'</p></section>'+
   '<section class="block"><h2>Bestand</h2><p>'+a+' aktive Themen, '+ar+' erledigt, '+S.inbox.length+' Inbox-Notizen.</p><button class="btn ghost red" data-act="wipe">Alle Daten auf diesem Gerät löschen</button></section>';
 }
 
@@ -542,6 +548,9 @@ document.addEventListener('change',e=>{
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&$('#sheet').hidden&&view!=='review')render()});
 
+if('serviceWorker' in navigator&&window.self===window.top&&location.protocol==='https:'){
+  navigator.serviceWorker.register('./sw.js').then(()=>{if(view==='daten'&&$('#sheet').hidden)render()}).catch(()=>{});
+}
 getDl();
 render();
 })();
