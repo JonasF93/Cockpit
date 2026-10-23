@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; media-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; worker-src 'self'; manifest-src 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -9,9 +10,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Themen-Cockpit</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#EDF0EC;--panel:#FFFFFF;--ink:#16232E;--muted:#5A6873;--line:#D5DBD7;
@@ -40,7 +38,7 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--hdr);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-h1,h2,.mteam,.big,.btn,.tabs button,.chip,.segb{font-family:"Barlow Semi Condensed","Arial Narrow",-apple-system,BlinkMacSystemFont,sans-serif}
+h1,h2,.mteam,.big,.btn,.tabs button,.chip,.segb{font-family:"Avenir Next Condensed","Arial Narrow",-apple-system,BlinkMacSystemFont,sans-serif}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--hdr);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
@@ -98,7 +96,7 @@ h2{font-size:21px;font-weight:700;margin:0 0 10px}
 .calbox{background:var(--soft);border-radius:12px;padding:12px;margin:0 0 14px}
 .kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:16px}
 .kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 12px 10px;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
-.kpi b{display:block;font-family:"Barlow Semi Condensed","Arial Narrow",-apple-system,sans-serif;font-size:36px;font-weight:700;line-height:1.05}
+.kpi b{display:block;font-family:"Avenir Next Condensed","Arial Narrow",-apple-system,sans-serif;font-size:36px;font-weight:700;line-height:1.05}
 .kpi span{font-size:13px;color:var(--muted)}
 .kpi.r b{color:var(--r)}.kpi.f b{color:#9A7000}.kpi.m b{color:var(--accent)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kpi.f b{color:var(--y)}}
