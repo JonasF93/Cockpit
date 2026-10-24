@@ -61,6 +61,10 @@ h2{font-size:21px;font-weight:700;margin:0 0 10px}
 .btn.red{color:var(--r)}
 .btn.sm{font-size:16px;padding:6px 12px;min-height:38px;border-radius:10px}
 .btn.wide{width:100%;display:block}
+.top-acts{display:flex;gap:8px;align-items:center}
+.btn.icon{padding:6px 10px;display:inline-flex;align-items:center;justify-content:center}
+mark{background:color-mix(in srgb,var(--y) 45%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+.srh{font-size:17px;margin:18px 0 8px}
 .btn:disabled{opacity:.4;cursor:default}
 .link{border:0;background:none;color:var(--accent);font:inherit;font-weight:600;padding:10px 0;cursor:pointer}
 
@@ -129,6 +133,30 @@ h2{font-size:21px;font-weight:700;margin:0 0 10px}
 .ptc{flex:0 0 30px;height:30px;border-radius:8px;border:2px solid var(--line);background:var(--bg);color:var(--accent-ink);font-weight:700;cursor:pointer;padding:0}
 .pt.done .ptc{background:var(--accent);border-color:var(--accent)}
 .ptx{border:0;background:none;color:var(--muted);font-size:24px;line-height:1;padding:6px 8px;cursor:pointer}
+.tkb{flex:1;min-width:0;text-align:left;background:none;border:0;padding:4px 0;font:inherit;color:var(--ink);display:flex;flex-direction:column;gap:2px;cursor:pointer}
+.tkb span{flex:0 0 auto}
+.tkt{overflow-wrap:anywhere}
+.pt.done .tkb span{text-decoration:none}
+.pt.done .tkb .tkt{text-decoration:line-through;color:var(--muted)}
+.seg.seg4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.seg4 .segb,.seg3s .segb{font-size:15px;padding:6px 4px;line-height:1.15;min-height:40px}
+.segb.nod::before{display:none}
+.seg.seg3s{margin-top:8px}
+.dcrow{padding:10px 0;border-top:1px solid var(--line)}
+.dcrow>span{display:block;font-weight:600;overflow-wrap:anywhere}
+.qbtns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 8px}
+.qbtns .btn{font-size:17px;padding:8px 6px}
+.today-line{display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:12px;align-items:center;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:16px;font:inherit;color:var(--ink);cursor:pointer}
+.today-line .im{display:block;font-weight:400}
+details.block summary{font-size:17px}
+[hidden]{display:none!important}
+.cu-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px}
+.wdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.wday{margin:0;text-align:center;position:relative}
+.wday input{position:absolute;opacity:0;width:1px;height:1px}
+.wday span{display:block;padding:10px 0;border:1px solid var(--line);border-radius:10px;color:var(--ink);font-weight:600;font-size:15px;background:var(--bg)}
+.wday input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.wday input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
 .calbox .check{margin:10px 0 6px}
 .calbox p{margin:0}
 .steps{padding-left:22px;margin:0 0 14px}
@@ -148,7 +176,7 @@ h2{font-size:21px;font-weight:700;margin:0 0 10px}
 .row-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 
 label{display:block;font-size:14px;color:var(--muted);font-weight:600;margin:0 0 14px}
-input[type=text],input[type=date],input[type=time],select,textarea{display:block;width:100%;margin-top:6px;font:inherit;font-size:16px;font-weight:400;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input[type=text],input[type=date],input[type=time],input[type=number],input[type=search],select,textarea{display:block;width:100%;margin-top:6px;font:inherit;font-size:16px;font-weight:400;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 input[type=date],input[type=time]{min-height:44px;-webkit-appearance:none;appearance:none}
 textarea{resize:vertical}
 fieldset{border:0;padding:0;margin:0 0 14px}
@@ -165,10 +193,10 @@ legend{font-size:14px;color:var(--muted);font-weight:600;margin-bottom:6px;paddi
 .sheet-wrap[hidden]{display:none}
 .sheet{background:var(--panel);width:100%;max-width:680px;max-height:calc(100% - env(safe-area-inset-top,0px) - 20px);overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:18px 18px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px));animation:up .22s ease-out}
 @keyframes up{from{transform:translateY(28px);opacity:.5}}
-.sheet input[type=text],.sheet input[type=date],.sheet input[type=time],.sheet select,.sheet textarea{background:var(--bg)}
+.sheet input[type=text],.sheet input[type=date],.sheet input[type=time],.sheet input[type=number],.sheet input[type=search],.sheet select,.sheet textarea{background:var(--bg)}
 .sheet-acts{display:flex;gap:10px;margin-top:6px}
 .sheet-acts .btn{flex:1}
-.danger{display:flex;justify-content:space-between;gap:10px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+.danger{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
 .pick{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 
 .capture{margin-bottom:22px}
@@ -203,13 +231,13 @@ details textarea{margin-bottom:10px}
 </style>
 </head>
 <body>
-<header class="top"><div class="top-in"><h1 id="vtitle">Lage</h1><button class="btn pri sm" data-act="quick">+ Notiz</button></div></header>
+<header class="top"><div class="top-in"><h1 id="vtitle">Lage</h1><div class="top-acts"><button class="btn sm icon" data-act="search" aria-label="Suchen" title="Suchen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="btn pri sm" data-act="quick">+ Erfassen</button></div></div></header>
 <main id="main"></main>
 <nav class="tabs" aria-label="Bereiche">
   <button data-tab="lage">Lage</button>
+  <button data-tab="heute">Heute<span id="ibadge"></span></button>
   <button data-tab="themen">Themen</button>
   <button data-tab="personen">1:1</button>
-  <button data-tab="inbox">Inbox<span id="ibadge"></span></button>
   <button data-tab="review">Review</button>
   <button data-tab="daten">Daten</button>
 </nav>
@@ -226,12 +254,12 @@ const STALE=21;
 const ST={g:'Grün',y:'Gelb',r:'Rot'};
 const WAIT={none:'Nichts',decision:'Meine Entscheidung oder Freigabe',promise:'Meine Zusage',others:'Andere (intern oder extern)'};
 const REMIND=[[0,'Am Tag der Deadline'],[1,'1 Tag vorher'],[3,'3 Tage vorher'],[7,'1 Woche vorher'],[14,'2 Wochen vorher']];
-const TITLES={lage:'Lage',themen:'Themen',personen:'1:1-Gespräche',inbox:'Inbox',review:'Review',daten:'Daten'};
+const TITLES={lage:'Lage',themen:'Themen',personen:'1:1-Gespräche',heute:'Heute',inbox:'Inbox',review:'Review',daten:'Daten'};
 
 let S=load();
 let view='lage', teamFilter='Alle', personFilter='Alle', kpiFilter=null, personSel=null, showArchived=false, rv=null, edit=null, pending=null;
 
-function blank(){return{topics:[],inbox:[],lastReview:null,lastExport:null,teams:DEFAULT_TEAMS.slice(),people:{},focus:null,goals:[]}}
+function blank(){return{topics:[],inbox:[],lastReview:null,lastExport:null,teams:DEFAULT_TEAMS.slice(),people:{},focus:null,goals:[],tasks:[],day:null,recurring:[]}}
 function load(){
   try{
     localStorage.setItem('__tc','1');localStorage.removeItem('__tc');
@@ -251,7 +279,10 @@ function normalize(d){
     people:d.people&&typeof d.people==='object'&&!Array.isArray(d.people)?d.people:{},
     focus:d.focus&&d.focus.week?{week:d.focus.week,top:Array.isArray(d.focus.top)?d.focus.top:[],not:String(d.focus.not||'')}:null,
     goals:Array.isArray(d.goals)?d.goals.filter(g=>g&&g.id&&g.title):[],
-    shortcutOk:!!d.shortcutOk
+    shortcutOk:!!d.shortcutOk,
+    tasks:Array.isArray(d.tasks)?d.tasks.filter(t=>t&&t.id&&t.text&&!(t.done&&t.doneAt&&Date.now()-t.doneAt>60*864e5)):[],
+    day:d.day&&d.day.date?{date:d.day.date,must:Array.isArray(d.day.must)?d.day.must:[],closed:!!d.day.closed}:null,
+    recurring:Array.isArray(d.recurring)?d.recurring.filter(r=>r&&r.id&&r.text&&r.freq):[]
   };
 }
 function save(){
@@ -317,8 +348,10 @@ function storageWarn(){return storageOk?'':'<div class="warnbox"><strong>Speiche
 function vLage(){
   const a=active();
   let h=storageWarn();
-  if(!a.length&&!S.inbox.length)return h+empty('Noch keine Themen','Lege dein erstes Thema an oder notiere kurz, was gerade ansteht. Einsortieren kannst du später. Eigene Teamnamen vergibst du unter „Daten“.','<button class="btn pri" data-act="new">Thema anlegen</button><button class="btn" data-act="quick">Notiz erfassen</button>');
+  if(!a.length&&!S.inbox.length&&!S.tasks.length)return h+empty('Noch keine Themen','Lege dein erstes Thema an oder notiere kurz, was gerade ansteht. Einsortieren kannst du später. Eigene Teamnamen vergibst du unter „Daten“.','<button class="btn pri" data-act="new">Thema anlegen</button><button class="btn" data-act="quick">Notiz erfassen</button>');
   if(a.length){const k=kpiSets(a);h+='<div class="kpis">'+[['r','r','kritisch'],['fr','f','Fristen'],['me','m','bei dir']].map(x=>'<button class="kpi '+x[1]+(k[x[0]].length?'':' zero')+'" data-act="kpi" data-k="'+x[0]+'" aria-label="'+k[x[0]].length+' '+x[2]+', Liste anzeigen"><b>'+k[x[0]].length+'</b><span>'+x[2]+'</span></button>').join('')+'</div>'}
+  {const td=today(),must=mustTasks(),tt=S.tasks.filter(t=>(!t.done&&bucketOf(t)==='today')||(t.done&&t.doneAt&&isoOf(t.doneAt)===td));const base=must.length?must:tt;
+   if(base.length){const dn=base.filter(t=>t.done).length;h+='<button class="today-line" data-act="go" data-v="heute"><span><strong>'+(must.length?'Pflicht heute':'Heute')+': '+dn+' von '+base.length+' erledigt</strong>'+(dayStarted()?'':'<span class="im">Tag noch nicht gestartet</span>')+'</span><span class="gbar"><i style="width:'+Math.round(dn/base.length*100)+'%"></i></span></button>'}}
   if(a.length){const wk=weekKey();const fo=S.focus&&S.focus.week===wk.key?S.focus:null;const ft=fo?fo.top.map(id=>S.topics.find(t=>t.id===id)).filter(Boolean):[];
     if(fo&&(ft.length||fo.not))h+='<section class="focus"><div class="row-actions" style="margin-bottom:4px"><h2 style="margin:0">Fokus KW '+wk.w+'</h2><button class="link" data-act="focusEdit">Ändern</button></div>'+ft.map(t=>'<button class="fitem" data-act="open" data-id="'+t.id+'"><span class="sd s-'+t.status+'"></span><span>'+esc(t.title)+(t.archived?' <span class="im">(erledigt)</span>':'')+'</span></button>').join('')+(fo.not?'<p class="fnot"><strong>Nicht diese Woche:</strong> '+esc(fo.not)+'</p>':'')+'</section>';
     else h+='<button class="inbox-hint" data-act="focusEdit">Wochenfokus für KW '+wk.w+' festlegen</button>';}
@@ -344,6 +377,8 @@ function vLage(){
   if(fr.length)h+=sect('Fristen in den nächsten 14 Tagen',fr);
   const me=a.filter(t=>!fr.includes(t)&&isMine(t)).sort(bySev);
   if(me.length)h+=sect('Wartet auf dich',me);
+  const due=personNames().map(n=>[n,talkDue(n)]).filter(x=>x[1]&&x[1].over>=0).sort((a,b)=>b[1].over-a[1].over);
+  if(due.length)h+='<section class="block"><h2>Gespräche fällig</h2><div class="list">'+due.map(x=>{const p=S.people[x[0]];const op=(p.points||[]).filter(z=>!z.done).length;return '<button class="item" data-act="personGo" data-name="'+esc(x[0])+'"><span class="bar s-'+(x[1].over>=x[1].r?'r':'y')+'"></span><span class="ib"><span class="it">'+esc(x[0])+'</span><span class="im">'+(p.role?esc(p.role)+', ':'')+(p.last?'letztes Gespräch '+rel(p.last):'noch kein Gespräch festgehalten')+'. Rhythmus: '+rhyLabel(x[1].r)+'</span>'+(op?'<span class="in">'+op+(op===1?' offener Gesprächspunkt':' offene Gesprächspunkte')+'</span>':'')+'</span></button>'}).join('')+'</div></section>';
   const warn=a.filter(t=>!me.includes(t)&&!fr.includes(t)&&(t.status==='r'||flags(t).length)).sort(bySev);
   if(warn.length)h+=sect('Achtung',warn);
   if(a.length&&!fr.length&&!me.length&&!warn.length)h+='<p class="calm">Keine Warnungen. Alle Themen sind in Bewegung.</p>';
@@ -382,7 +417,7 @@ function isMine(t){return t.waiting==='decision'||t.waiting==='promise'||(!!t.fo
 function fmtTs(ts){const d=new Date(ts);return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getFullYear()).slice(2)}
 function hasPerson(n){return Object.prototype.hasOwnProperty.call(S.people,n)}
 function ensurePerson(n){if(!hasPerson(n))S.people[n]={points:[],last:null,log:[]};const p=S.people[n];if(!Array.isArray(p.points))p.points=[];if(!Array.isArray(p.log))p.log=[];return p}
-function personNames(){const s=new Set();active().forEach(t=>{if(t.owner)s.add(t.owner)});Object.keys(S.people).forEach(n=>s.add(n));return[...s].sort((x,y)=>x.localeCompare(y,'de'))}
+function personNames(){const s=new Set();active().forEach(t=>{if(t.owner)s.add(t.owner)});S.tasks.forEach(t=>{if(!t.done&&t.person)s.add(t.person)});Object.keys(S.people).forEach(n=>s.add(n));return[...s].sort((x,y)=>x.localeCompare(y,'de'))}
 function copyText(id){const ta=document.getElementById(id);if(!ta)return;const sel=()=>{ta.focus();ta.select();toast('Text ist markiert. Tippe auf Kopieren.')};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(ta.value).then(()=>toast('Kopiert.'),sel);else sel()}
 function buildReport(team,names){
   const a=active().filter(t=>!team||t.team===team);
@@ -407,9 +442,13 @@ function vPersonen(){
     const teams=[...new Set(ts.map(t=>t.team))];
     let h='<button class="link" data-act="personBack">Alle Personen</button>';
     h+='<h2 class="pname">'+esc(n)+'</h2><p class="im" style="margin:0 0 18px">'+(teams.length?esc(teams.join(', '))+', ':'')+(p.last?'letztes Gespräch '+rel(p.last):'noch kein Gespräch festgehalten')+'</p>';
+    const tdue=talkDue(n);
+    h+='<div class="calbox" style="margin-bottom:22px"><div class="cu-row"><label style="margin:0">Gesprächsrhythmus<select id="pr-rhythm">'+RHY.map(o=>'<option value="'+o[0]+'"'+((+p.rhythm||0)===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label><label style="margin:0">Rolle<input type="text" id="pr-role" value="'+esc(p.role||'')+'" placeholder="z. B. Vorgesetzte"></label></div>'+(tdue?'<p class="im" style="margin-top:10px">'+(tdue.over>=0?'<strong>1:1 fällig</strong> '+(tdue.over===0?'seit heute':'seit '+tdue.over+(tdue.over===1?' Tag':' Tagen')):'Nächstes Gespräch fällig am '+fmt(tdue.next))+'</p>':'')+'</div>';
     h+='<section class="block"><h2>Gesprächspunkte</h2><div class="ptadd"><input type="text" id="pt-new" placeholder="Was willst du ansprechen?" aria-label="Neuer Gesprächspunkt"><button class="btn pri sm" data-act="ptAdd">Hinzufügen</button></div>';
     h+=p.points.length?'<div class="pts">'+p.points.map(x=>'<div class="pt'+(x.done?' done':'')+'"><button class="ptc" data-act="ptToggle" data-id="'+x.id+'" role="checkbox" aria-checked="'+(!!x.done)+'" aria-label="Besprochen">'+(x.done?'✓':'')+'</button><span>'+esc(x.text)+'</span><button class="ptx" data-act="ptDel" data-id="'+x.id+'" aria-label="Punkt löschen">×</button></div>').join('')+'</div>':'<p class="calm">Sammle hier über die Woche, was du im nächsten Gespräch ansprechen willst.</p>';
     h+='</section>';
+    const pk=S.tasks.filter(t=>!t.done&&t.person===n);
+    if(pk.length)h+=taskSect('Offene Aufgaben',pk);
     if(ts.length)h+=sect('Themen von '+esc(n),ts);
     h+='<section class="block"><h2>Gespräch abschließen</h2><label>Notiz zum Gespräch (optional)<textarea id="mt-note" rows="3" placeholder="Vereinbarungen, Eindrücke, nächste Schritte"></textarea></label><button class="btn pri wide" data-act="meetDone">Gespräch abschließen</button><p class="im" style="margin-top:8px">Abgehakte Punkte wandern in den Verlauf, offene bleiben für das nächste Gespräch stehen.</p></section>';
     if(p.log.length)h+='<section class="block"><h2>Verlauf</h2>'+p.log.slice(0,10).map(l=>'<div class="note"><span class="im">'+fmtTs(l.at)+'</span>'+(l.text?'<p>'+esc(l.text).replace(/\n/g,'<br>')+'</p>':'')+(l.points&&l.points.length?'<p class="im">Besprochen: '+l.points.map(esc).join('; ')+'</p>':'')+'</div>').join('')+'</section>';
@@ -419,19 +458,97 @@ function vPersonen(){
   const names=personNames();
   let h='<div class="row-actions"><span class="im">'+names.length+(names.length===1?' Person':' Personen')+'</span><button class="btn pri sm" data-act="personAdd">Person hinzufügen</button></div>';
   if(!names.length)return h+'<p class="calm">Personen erscheinen hier, sobald du bei einem Thema jemanden als verantwortlich einträgst.</p>';
-  return h+'<div class="list">'+names.map(n=>{
+  return h+'<div class="list">'+names.slice().sort((a,b)=>{const x=talkDue(a),y=talkDue(b);return (y&&y.over>=0?y.over+1:0)-(x&&x.over>=0?x.over+1:0)}).map(n=>{
     const p=hasPerson(n)?S.people[n]:null;
     const ts=active().filter(t=>t.owner===n).sort(bySev);
     const open=p&&Array.isArray(p.points)?p.points.filter(x=>!x.done).length:0;
-    const teams=[...new Set(ts.map(t=>t.team))];
-    return '<button class="item" data-act="person" data-name="'+esc(n)+'"><span class="bar s-'+(ts.length?ts[0].status:'g')+'"'+(ts.length?'':' style="background:var(--line)"')+'></span><span class="ib"><span class="it">'+esc(n)+'</span><span class="im">'+(teams.length?esc(teams.join(', '))+', ':'')+ts.length+(ts.length===1?' Thema':' Themen')+(open?', '+open+(open===1?' offener Punkt':' offene Punkte'):'')+'</span><span class="im">'+(p&&p.last?'Letztes Gespräch '+rel(p.last):'Noch kein Gespräch festgehalten')+'</span></span></button>';
+    const teams=[...new Set(ts.map(t=>t.team))];const tdue=talkDue(n);
+    return '<button class="item" data-act="person" data-name="'+esc(n)+'"><span class="bar s-'+(ts.length?ts[0].status:'g')+'"'+(ts.length?'':' style="background:var(--line)"')+'></span><span class="ib"><span class="it">'+esc(n)+'</span><span class="im">'+(teams.length?esc(teams.join(', '))+', ':'')+ts.length+(ts.length===1?' Thema':' Themen')+(open?', '+open+(open===1?' offener Punkt':' offene Punkte'):'')+'</span><span class="im">'+(p&&p.role?esc(p.role)+', ':'')+(p&&p.last?'Letztes Gespräch '+rel(p.last):'Noch kein Gespräch festgehalten')+'</span>'+(tdue&&tdue.over>=0?'<span class="fl"><span class="tag me">1:1 fällig</span></span>':'')+'</span></button>';
   }).join('')+'</div>';
+}
+
+/* ---------- Gesprächsrhythmus ---------- */
+const RHY=[[0,'Kein fester Rhythmus'],[7,'Jede Woche'],[14,'Alle 2 Wochen'],[21,'Alle 3 Wochen'],[30,'Monatlich'],[42,'Alle 6 Wochen'],[90,'Quartalsweise']];
+function rhyLabel(r){const o=RHY.find(x=>x[0]===+r);return o?o[1]:'alle '+r+' Tage'}
+function talkDue(n){if(!hasPerson(n))return null;const p=S.people[n];const r=+p.rhythm||0;if(!r)return null;const base=p.last||p.rhythmSince;if(!base)return null;const d=days(base);return{r:r,d:d,over:d-r,next:shiftIso(isoOf(base),r)}}
+
+/* ---------- Suche ---------- */
+function snip(text,q){const s=String(text||'');const i=s.toLowerCase().indexOf(q);if(i<0)return null;const a=Math.max(0,i-40),e=Math.min(s.length,i+q.length+60);return(a>0?'…':'')+esc(s.slice(a,i))+'<mark>'+esc(s.slice(i,i+q.length))+'</mark>'+esc(s.slice(i+q.length,e))+(e<s.length?'…':'')}
+function firstSnip(fields,q){for(const f of fields){const s=snip(f,q);if(s)return s}return null}
+function searchHtml(raw){
+  const q=String(raw||'').trim().toLowerCase();
+  if(q.length<2)return '<p class="calm">Mindestens zwei Zeichen eingeben. Gesucht wird in Themen, Aufgaben, Personen, 1:1-Verläufen und der Inbox.</p>';
+  let h='',total=0;
+  const tp=S.topics.map(t=>({t:t,s:firstSnip([t.title,t.goal,t.next,t.notes,t.owner,t.waitNote,t.team],q)})).filter(x=>x.s).sort((a,b)=>((a.t.archived?1:0)-(b.t.archived?1:0))||bySev(a.t,b.t)).slice(0,25);
+  if(tp.length){total+=tp.length;h+='<h2 class="srh">Themen</h2><div class="list">'+tp.map(x=>{const t=x.t;const tt=snip(t.title,q);return '<button class="item" data-act="srOpen" data-k="t" data-id="'+t.id+'"><span class="bar s-'+t.status+'"'+(t.archived?' style="background:var(--line)"':'')+'></span><span class="ib"><span class="it">'+(tt||esc(t.title))+'</span><span class="im">'+who(t)+(t.archived?', erledigt':'')+'</span>'+(tt?'':'<span class="in">'+x.s+'</span>')+'</span></button>'}).join('')+'</div>'}
+  const tk=S.tasks.map(t=>({t:t,s:firstSnip([t.text,t.person],q)})).filter(x=>x.s).sort((a,b)=>(a.t.done?1:0)-(b.t.done?1:0)).slice(0,25);
+  if(tk.length){total+=tk.length;h+='<h2 class="srh">Aufgaben</h2><div class="list">'+tk.map(x=>{const t=x.t;return '<button class="item" data-act="srOpen" data-k="k" data-id="'+t.id+'"><span class="bar" style="background:'+(t.done?'var(--line)':'var(--accent)')+'"></span><span class="ib"><span class="it">'+(snip(t.text,q)||esc(t.text))+'</span><span class="im">'+(t.done?'erledigt':BLABEL[bucketOf(t)])+(t.person?', '+(snip(t.person,q)||esc(t.person)):'')+'</span></span></button>'}).join('')+'</div>'}
+  const pp=personNames().map(n=>{const p=hasPerson(n)?S.people[n]:null;const f=[n,p&&p.role];if(p){(p.points||[]).forEach(x=>f.push(x.text));(p.log||[]).forEach(l=>{f.push(l.text);(l.points||[]).forEach(z=>f.push(z))})}return{n:n,p:p,s:firstSnip(f,q)}}).filter(x=>x.s).slice(0,25);
+  if(pp.length){total+=pp.length;h+='<h2 class="srh">Personen und 1:1</h2><div class="list">'+pp.map(x=>{const nn=snip(x.n,q);return '<button class="item" data-act="srOpen" data-k="p" data-name="'+esc(x.n)+'"><span class="bar" style="background:var(--accent)"></span><span class="ib"><span class="it">'+(nn||esc(x.n))+'</span>'+(x.p&&x.p.role?'<span class="im">'+esc(x.p.role)+'</span>':'')+(nn?'':'<span class="in">'+x.s+'</span>')+'</span></button>'}).join('')+'</div>'}
+  const ib=S.inbox.map(n=>({n:n,s:snip(n.text,q)})).filter(x=>x.s).slice(0,25);
+  if(ib.length){total+=ib.length;h+='<h2 class="srh">Inbox</h2><div class="list">'+ib.map(x=>'<button class="item" data-act="srOpen" data-k="n"><span class="bar" style="background:var(--muted)"></span><span class="ib"><span class="in">'+x.s+'</span><span class="im">'+rel(x.n.at)+'</span></span></button>').join('')+'</div>'}
+  return total?'<p class="im" style="margin:0">'+total+' Treffer</p>'+h:'<p class="calm">Keine Treffer für „'+esc(String(raw).trim())+'“.</p>';
+}
+
+/* ---------- Aufgaben ---------- */
+const BLABEL={today:'Heute',tomorrow:'Morgen',week:'Diese Woche',later:'Später'};
+function isoOf(ts){const d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function weekEndIso(){const day=new Date().getDay()||7;return shiftIso(today(),7-day)}
+function bucketOf(t){const td=today();if(!t.when)return'later';if(t.flex)return t.when<td?'today':'week';if(t.when<=td)return'today';if(t.when===shiftIso(td,1))return'tomorrow';return t.when<=weekEndIso()?'week':'later'}
+function setWhen(t,b){if(b==='today'){t.when=today();t.flex=false}else if(b==='tomorrow'){t.when=shiftIso(today(),1);t.flex=false}else if(b==='week'){t.when=weekEndIso();t.flex=true}else{t.when='';t.flex=false}}
+function newTask(text,b,extra){const t=Object.assign({id:uid(),text:text,done:false,doneAt:null,created:Date.now(),moves:0,topicId:'',person:''},extra||{});setWhen(t,b);S.tasks.push(t);return t}
+function inBucket(b){return S.tasks.filter(t=>!t.done&&bucketOf(t)===b)}
+function dayStarted(){return !!(S.day&&S.day.date===today())}
+function mustTasks(){return dayStarted()?S.day.must.map(id=>S.tasks.find(t=>t.id===id)).filter(Boolean):[]}
+function lines(s){return String(s||'').split(String.fromCharCode(10)).map(x=>x.trim()).filter(Boolean)}
+const FREQ={daily:'Täglich',workdays:'Werktags (Mo bis Fr)',weekly:'Wöchentlich',monthly:'Monatlich',custom:'Individuell'};
+const WD=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+function isoDow(iso){return new Date(iso+'T12:00:00').getDay()||7}
+function matchesRule(r,iso){const dow=isoDow(iso);if(r.freq==='daily')return true;if(r.freq==='workdays')return dow<=5;if(r.freq==='weekly')return dow===(+r.weekday||1);if(r.freq==='monthly'){const d=new Date(iso+'T12:00:00');const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return d.getDate()===Math.min(+r.monthday||1,dim)}if(r.freq==='custom')return matchesCustom(r,iso);return false}
+function dayDiff(a,b){return Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5)}
+function ruleDays(r){return Array.isArray(r.days)&&r.days.length?r.days:[isoDow(r.start||today())]}
+function matchesCustom(r,iso){const st=r.start||iso;const n=Math.max(1,+r.interval||1);const dd=dayDiff(st,iso);if(dd<0)return false;
+  if(r.unit==='week'){if(!ruleDays(r).includes(isoDow(iso)))return false;const wk=Math.round(dayDiff(shiftIso(st,1-isoDow(st)),shiftIso(iso,1-isoDow(iso)))/7);return wk%n===0}
+  if(r.unit==='month'){const a=new Date(st+'T12:00:00'),b=new Date(iso+'T12:00:00');const md=(b.getFullYear()-a.getFullYear())*12+b.getMonth()-a.getMonth();if(md<0||md%n!==0)return false;const dim=new Date(b.getFullYear(),b.getMonth()+1,0).getDate();return b.getDate()===Math.min(a.getDate(),dim)}
+  return dd%n===0}
+function lastOcc(r){const td=today();for(let i=0;i<32;i++){const iso=shiftIso(td,-i);if(matchesRule(r,iso))return iso}return ''}
+function ruleText(r){if(r.freq==='custom'){const n=Math.max(1,+r.interval||1);let s;if(r.unit==='week'){s=(n===1?'Jede Woche':'Alle '+n+' Wochen')+' am '+ruleDays(r).slice().sort((a,b)=>a-b).map(i=>WD[i-1].slice(0,2)).join(', ')}else if(r.unit==='month'){s=(n===1?'Jeden Monat':'Alle '+n+' Monate')+' am '+(+String(r.start||today()).slice(8))+'.'}else{s=n===1?'Täglich':'Alle '+n+' Tage'}return s+(r.start&&r.start>today()?', ab '+fmt(r.start):'')}return r.freq==='weekly'?'Jeden '+WD[(+r.weekday||1)-1]:r.freq==='monthly'?'Monatlich am '+(+r.monthday||1)+'.':FREQ[r.freq]}
+function genRecurring(){let ch=false;(S.recurring||[]).forEach(r=>{const o=lastOcc(r);if(!o||(r.lastGen&&o<=r.lastGen))return;r.lastGen=o;ch=true;if(S.tasks.some(t=>!t.done&&t.ruleId===r.id))return;const t=newTask(r.text,'today',{topicId:r.topicId||'',person:r.person||'',ruleId:r.id});t.when=o;t.flex=false});if(ch)save()}
+function taskRow(t){
+  const tp=t.topicId?S.topics.find(x=>x.id===t.topicId):null;const meta=[];
+  if(t.ruleId)meta.push('↻ wiederkehrend');if(tp)meta.push(esc(tp.title));if(t.person)meta.push(esc(t.person));
+  if(!t.done&&t.when&&t.when<today())meta.push(t.flex?'aus der Vorwoche':'übrig seit '+fmt(t.when));
+  if(!t.done&&bucketOf(t)==='later'&&t.when)meta.push('am '+fmt(t.when));
+  const warn=!t.done&&(t.moves||0)>=3;
+  return '<div class="pt'+(t.done?' done':'')+'"><button class="ptc" data-act="tkToggle" data-id="'+t.id+'" role="checkbox" aria-checked="'+(!!t.done)+'" aria-label="Erledigt">'+(t.done?'✓':'')+'</button><button class="tkb" data-act="tkOpen" data-id="'+t.id+'"><span class="tkt">'+esc(t.text)+'</span>'+(meta.length?'<span class="im">'+meta.join(', ')+'</span>':'')+(warn?'<span class="fl"><span class="tag stale">'+t.moves+'-mal verschoben</span></span>':'')+'</button></div>';
+}
+function taskList(list){return '<div class="pts">'+list.map(taskRow).join('')+'</div>'}
+function taskSect(title,list){return '<section class="block"><h2>'+title+'</h2>'+taskList(list)+'</section>'}
+function vHeute(){
+  const td=today(),started=dayStarted(),must=mustTasks(),mustIds=must.map(t=>t.id);
+  const tdy=inBucket('today'),tmr=inBucket('tomorrow'),wk=inBucket('week'),lat=inBucket('later');
+  let h=storageWarn();
+  if(S.inbox.length)h+='<button class="inbox-hint" data-act="go" data-v="inbox">'+S.inbox.length+(S.inbox.length===1?' Notiz wartet':' Notizen warten')+' in der Inbox</button>';
+  h+='<div class="ptadd"><input type="text" id="tk-new" placeholder="Neue Aufgabe für heute" aria-label="Neue Aufgabe für heute" autocomplete="off"><button class="btn pri sm" data-act="tkAdd">Hinzufügen</button></div>';
+  if(!started&&(tdy.length||wk.length))h+='<section class="notice"><div><strong>Tag starten</strong><p>Wähle bis zu fünf Pflichtaufgaben für heute.</p></div><button class="btn pri" data-act="dayStart">Starten</button></section>';
+  if(must.length){const dn=must.filter(t=>t.done).length;h+='<section class="block"><div class="row-actions" style="margin-bottom:8px"><h2 style="margin:0">Pflicht heute</h2><span class="im">'+dn+' von '+must.length+' erledigt</span></div>'+taskList(must)+'<button class="link" data-act="dayStart">Pflichtaufgaben ändern</button></section>'}
+  const rest=tdy.filter(t=>!mustIds.includes(t.id));
+  if(rest.length)h+=taskSect(must.length?'Weitere Aufgaben heute':'Heute',rest);
+  if(tmr.length)h+=taskSect('Morgen',tmr);
+  if(wk.length)h+=taskSect('Diese Woche',wk);
+  if(lat.length)h+='<details class="block"><summary>Später ('+lat.length+')</summary>'+taskList(lat)+'</details>';
+  const doneT=S.tasks.filter(t=>t.done&&t.doneAt&&isoOf(t.doneAt)===td&&!mustIds.includes(t.id));
+  if(doneT.length)h+='<details class="block"><summary>Heute erledigt ('+doneT.length+')</summary>'+taskList(doneT)+'</details>';
+  if(!S.tasks.some(t=>!t.done)&&!must.length)h+='<p class="calm">Keine offenen Aufgaben. Leg oben eine an, übernimm den nächsten Schritt eines Themas oder bereite ein Meeting nach.</p>';
+  h+='<div class="btns" style="justify-content:flex-start;margin-top:8px"><button class="btn" data-act="mtPost">Meeting nachbereiten</button><button class="btn" data-act="recList">Wiederkehrend'+((S.recurring||[]).length?' ('+S.recurring.length+')':'')+'</button>'+(tdy.length||started?'<button class="btn" data-act="dayClose">Tag abschließen</button>':'')+'</div>';
+  if(started&&S.day.closed)h+='<p class="im" style="margin-top:10px">Tag abgeschlossen.</p>';
+  return h;
 }
 
 function vInbox(){
   let h='<section class="capture"><label class="sr" for="cap">Notiz</label><textarea id="cap" rows="3" placeholder="Was ist gerade aufgekommen? Kurz notieren, einsortieren kannst du später."></textarea><button class="btn pri wide" data-act="addInbox">In Inbox ablegen</button></section>';
   if(!S.inbox.length)return h+'<p class="calm">Die Inbox ist leer. Alles ist einsortiert.</p>';
-  return h+S.inbox.slice().reverse().map(n=>'<div class="note"><p>'+esc(n.text).replace(/\n/g,'<br>')+'</p><span class="im">'+rel(n.at)+'</span><div class="nacts"><button class="btn sm pri" data-act="toTopic" data-id="'+n.id+'">Als Thema anlegen</button>'+(active().length?'<button class="btn sm" data-act="attach" data-id="'+n.id+'">Zu Thema hinzufügen</button>':'')+'<button class="btn sm ghost" data-act="delNote" data-id="'+n.id+'">Löschen</button></div></div>').join('');
+  return h+S.inbox.slice().reverse().map(n=>'<div class="note"><p>'+esc(n.text).replace(/\n/g,'<br>')+'</p><span class="im">'+rel(n.at)+'</span><div class="nacts"><button class="btn sm pri" data-act="noteTask" data-id="'+n.id+'">Als Aufgabe</button><button class="btn sm" data-act="toTopic" data-id="'+n.id+'">Als Thema</button>'+(active().length?'<button class="btn sm" data-act="attach" data-id="'+n.id+'">Zu Thema hinzufügen</button>':'')+'<button class="btn sm ghost" data-act="delNote" data-id="'+n.id+'">Löschen</button></div></div>').join('');
 }
 
 function waitOpts(cur){return Object.keys(WAIT).map(k=>'<option value="'+k+'"'+(cur===k?' selected':'')+'>'+WAIT[k]+'</option>').join('')}
@@ -480,10 +597,11 @@ function vDaten(){
 }
 
 function render(){
+  genRecurring();
   $('#vtitle').textContent=TITLES[view];
   document.querySelectorAll('.tabs button').forEach(b=>{const on=b.dataset.tab===view;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   $('#ibadge').innerHTML=S.inbox.length?'<span class="badge">'+S.inbox.length+'</span>':'';
-  const fn={lage:vLage,themen:vThemen,personen:vPersonen,inbox:vInbox,review:vReview,daten:vDaten}[view];
+  const fn={lage:vLage,themen:vThemen,personen:vPersonen,heute:vHeute,inbox:vInbox,review:vReview,daten:vDaten}[view];
   $('#main').innerHTML=fn();
 }
 function go(v){view=v;render();window.scrollTo(0,0)}
@@ -496,10 +614,10 @@ function confirmSheet(title,text,okLabel,cb){pending=cb;sheet('<h2>'+title+'</h2
 let tt=null;
 function toast(m){const el=$('#toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400)}
 
-function openEditor(id,prefill,fromNote){
+function openEditor(id,prefill,fromNote,fromTask){
   const ex=id?S.topics.find(x=>x.id===id):null;
   const t=ex||Object.assign({title:'',team:teamFilter!=='Alle'?teamFilter:S.teams[0],goal:'',status:'g',next:'',due:'',owner:'',deadline:'',remind:3,followUp:'',goalId:'',waiting:'none',waitNote:'',notes:''},prefill||{});
-  edit={id:id||null,fromNote:fromNote||null};
+  edit={id:id||null,fromNote:fromNote||null,fromTask:fromTask||null};
   const teams=S.teams.includes(t.team)?S.teams:S.teams.concat([t.team]);
   sheet('<h2>'+(id?'Thema bearbeiten':'Neues Thema')+'</h2>'+
     '<label>Titel<input type="text" id="f-title" value="'+esc(t.title)+'" maxlength="140"'+(id?'':' data-focus')+'></label>'+
@@ -509,6 +627,7 @@ function openEditor(id,prefill,fromNote){
     (S.goals.length?'<label>Zahlt ein auf Jahresziel<select id="f-goalid"><option value="">Keins</option>'+S.goals.map(g=>'<option value="'+g.id+'"'+(t.goalId===g.id?' selected':'')+'>'+esc(g.title)+'</option>').join('')+'</select></label>':'')+
     '<fieldset><legend>Status</legend>'+segHtml('f-status',t.status)+'</fieldset>'+
     '<label>Nächster Schritt<textarea id="f-next" rows="2" placeholder="Was passiert als Nächstes, und wer macht es?">'+esc(t.next)+'</textarea></label>'+
+    '<button type="button" class="link" data-act="nextToTask" style="margin:-10px 0 8px">Nächsten Schritt als Aufgabe für heute</button>'+
     '<label>Nächster Meilenstein<input type="date" id="f-due" value="'+esc(t.due||'')+'"></label>'+
     '<label>Deadline (Endtermin)<input type="date" id="f-deadline" value="'+esc(t.deadline||'')+'"></label>'+
     '<label>Erinnern<select id="f-remind">'+REMIND.map(r=>'<option value="'+r[0]+'"'+((t.remind??3)===r[0]?' selected':'')+'>'+r[1]+'</option>').join('')+'</select></label>'+
@@ -519,6 +638,7 @@ function openEditor(id,prefill,fromNote){
     '<label>Nachfassen am<input type="date" id="f-follow" value="'+esc(t.followUp||'')+'"></label>'+
     '<div class="calbox"><button type="button" class="btn sm" data-act="remFollow">Nachfassen als Erinnerung anlegen</button><p class="im" style="margin-top:8px">Legt zur gewählten Uhrzeit eine Erinnerung in der App „Erinnerungen“ an. iOS wechselt dazu kurz in die Kurzbefehle-App; zurück kommst du mit „◀“ oben links. Bei „Wartet auf: Andere“ schlägt die App automatisch ein Datum in 7 Tagen vor.</p></div>'+
     '<label>Notizen<textarea id="f-notes" rows="4">'+esc(t.notes)+'</textarea></label>'+
+    (ex&&S.tasks.some(k=>!k.done&&k.topicId===ex.id)?'<div class="calbox"><strong>Offene Aufgaben</strong><ul class="steps" style="margin:8px 0 0">'+S.tasks.filter(k=>!k.done&&k.topicId===ex.id).map(k=>'<li>'+esc(k.text)+' <span class="im">('+BLABEL[bucketOf(k)]+')</span></li>').join('')+'</ul></div>':'')+
     (ex?'<p class="im">Angelegt '+rel(ex.created)+', letzte Bewegung '+rel(ex.progressAt)+'.</p>':'')+
     '<div class="sheet-acts"><button class="btn pri" data-act="saveTopic">Speichern</button><button class="btn ghost" data-act="close">Abbrechen</button></div>'+
     (ex?'<div class="danger"><button class="btn sm" data-act="toggleArch" data-id="'+ex.id+'">'+(ex.archived?'Wieder aktivieren':'Als erledigt ablegen')+'</button><button class="btn sm ghost red" data-act="delTopic" data-id="'+ex.id+'">Löschen</button></div>':''));
@@ -538,6 +658,7 @@ function saveTopic(){
     S.topics.push(Object.assign({id:uid()},d,{created:now,progressAt:now,updatedAt:now,archived:false}));
   }
   if(edit&&edit.fromNote)S.inbox=S.inbox.filter(n=>n.id!==edit.fromNote);
+  if(edit&&edit.fromTask)S.tasks=S.tasks.filter(k=>k.id!==edit.fromTask);
   save();closeSheet();render();toast('Gespeichert.');
 }
 
@@ -625,7 +746,7 @@ function importText(txt){
 /* ---------- Aktionen ---------- */
 const A={
   go:b=>go(b.dataset.v),
-  quick:()=>sheet('<h2>Notiz erfassen</h2><label class="sr" for="q-text">Notiz</label><textarea id="q-text" rows="4" placeholder="Was ist gerade aufgekommen?" data-focus></textarea><div class="sheet-acts" style="margin-top:12px"><button class="btn pri" data-act="saveQuick">In Inbox ablegen</button><button class="btn ghost" data-act="close">Abbrechen</button></div>'),
+  quick:()=>sheet('<h2>Schnell erfassen</h2><label class="sr" for="q-text">Text</label><textarea id="q-text" rows="3" placeholder="Was steht an? Mehrere Aufgaben je eine Zeile." data-focus></textarea><div class="qbtns"><button class="btn pri" data-act="qTask" data-b="today">Heute</button><button class="btn" data-act="qTask" data-b="tomorrow">Morgen</button><button class="btn" data-act="saveQuick">Inbox</button></div><p class="im" style="margin:0">Heute und Morgen legen Aufgaben an. Die Inbox merkt sich die Notiz zum späteren Einsortieren.</p><div class="row-actions" style="margin:8px 0 0"><button class="link" data-act="mtPost">Meeting nachbereiten</button><button class="link" data-act="close">Abbrechen</button></div>'),
   saveQuick:()=>{const t=val('q-text').trim();if(!t){toast('Die Notiz ist leer.');return}S.inbox.push({id:uid(),text:t,at:Date.now()});save();closeSheet();render();toast('In Inbox abgelegt.')},
   addInbox:()=>{const t=val('cap').trim();if(!t){toast('Die Notiz ist leer.');return}S.inbox.push({id:uid(),text:t,at:Date.now()});save();render();toast('In Inbox abgelegt.')},
   new:()=>openEditor(null,{}),
@@ -688,6 +809,43 @@ const A={
   scHelp:()=>sheet('<h2>Kurzbefehl einrichten</h2><p class="im">Einmalig, etwa 3 Minuten. Die Bezeichnungen können je nach iOS-Version leicht abweichen.</p><ol class="steps"><li>App <strong>Kurzbefehle</strong> öffnen und oben rechts auf <strong>+</strong> tippen.</li><li>Oben auf den Namen tippen und genau <strong>Cockpit Erinnerung</strong> eintragen.</li><li>Aktion <strong>Text aufteilen</strong> hinzufügen (Suchbegriff „aufteilen“). Als Text <strong>Kurzbefehleingabe</strong> wählen, trennen bei <strong>Neue Zeilen</strong>.</li><li>Aktion <strong>Objekt aus Liste abrufen</strong> hinzufügen und <strong>Erstes Objekt</strong> aus <strong>Aufgeteilter Text</strong> wählen.</li><li>Dieselbe Aktion noch einmal hinzufügen, diesmal <strong>Letztes Objekt</strong> aus <strong>Aufgeteilter Text</strong>.</li><li>Aktion <strong>Neue Erinnerung hinzufügen</strong> hinzufügen (Suchbegriff „Erinnerung“). Als Titel das Ergebnis aus Schritt 4 wählen. Bei <strong>Hinweis</strong> bzw. <strong>Erinnern</strong> ein Datum aktivieren und das Ergebnis aus Schritt 5 einsetzen. Als Liste eine private Liste wählen, zum Beispiel „Cockpit“.</li><li>Auf <strong>Fertig</strong> tippen, zurück in diese App und <strong>Test-Erinnerung anlegen</strong> tippen.</li></ol><p class="im">Falls „Kurzbefehleingabe“ nicht auswählbar ist: im Kurzbefehl unten auf das Info-Symbol tippen und das Empfangen von Eingaben für Text erlauben. Beim ersten Ausführen fragt iOS, ob die App Kurzbefehle öffnen darf. Das bitte erlauben.</p><div class="sheet-acts"><button class="btn pri" data-act="scOk">Kurzbefehl ist eingerichtet</button><button class="btn ghost" data-act="close">Schließen</button></div>'),
   scOk:()=>{S.shortcutOk=true;save();closeSheet();render();toast('Erinnerungen sind aktiviert.')},
   scTest:()=>{const d=new Date(Date.now()+2*60000);const iso=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');runShortcut('Test vom Themen-Cockpit',iso,String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'),true)},
+  tkAdd:()=>{const v=val('tk-new').trim();if(!v){toast('Die Aufgabe ist leer.');return}newTask(v,'today');save();render();const i=$('#tk-new');if(i)i.focus()},
+  tkToggle:b=>{const t=S.tasks.find(x=>x.id===b.dataset.id);if(!t)return;t.done=!t.done;t.doneAt=t.done?Date.now():null;save();render()},
+  tkOpen:b=>{const t=S.tasks.find(x=>x.id===b.dataset.id);if(!t)return;const cur=t.done?'today':bucketOf(t);sheet('<h2>Aufgabe</h2><label>Text<input type="text" id="tk-text" value="'+esc(t.text)+'"></label><fieldset><legend>Wann</legend><div class="seg seg4" id="tk-when">'+Object.keys(BLABEL).map(k=>'<button type="button" class="segb nod'+(cur===k?' on':'')+'" data-act="seg" data-val="'+k+'" aria-pressed="'+(cur===k)+'">'+BLABEL[k]+'</button>').join('')+'</div></fieldset><label>Gehört zu Thema<select id="tk-topic"><option value="">Kein Thema</option>'+active().sort((x,y)=>x.title.localeCompare(y.title,'de')).map(x=>'<option value="'+x.id+'"'+(x.id===t.topicId?' selected':'')+'>'+esc(x.title)+'</option>').join('')+'</select></label><label>Person<input type="text" id="tk-person" list="tk-plist" value="'+esc(t.person||'')+'" autocomplete="off" placeholder="Optional"></label><datalist id="tk-plist">'+personNames().map(n=>'<option value="'+esc(n)+'">').join('')+'</datalist>'+((t.moves||0)>=3?'<p class="warnbox">Diese Aufgabe wurde '+t.moves+'-mal verschoben. Ist sie unwichtig, oder steckt eigentlich ein Thema dahinter?</p>':'')+(t.ruleId&&(S.recurring||[]).some(r=>r.id===t.ruleId)?'<button class="link" data-act="recEdit" data-id="'+t.ruleId+'">↻ Wiederholung bearbeiten</button>':'<button class="link" data-act="recEdit" data-from="'+t.id+'">↻ Regelmäßig wiederholen</button>')+'<div class="sheet-acts"><button class="btn pri" data-act="tkSave" data-id="'+t.id+'">Speichern</button><button class="btn ghost" data-act="close">Abbrechen</button></div><div class="danger"><button class="btn sm" data-act="tkDelegate" data-id="'+t.id+'">Delegieren</button><button class="btn sm" data-act="tkToTopic" data-id="'+t.id+'">Zum Thema machen</button><button class="btn sm ghost red" data-act="tkDel" data-id="'+t.id+'">Löschen</button></div>')},
+  tkSave:b=>{const t=S.tasks.find(x=>x.id===b.dataset.id);if(!t)return;const v=val('tk-text').trim();if(!v){toast('Die Aufgabe ist leer.');return}const on=document.querySelector('#tk-when .on');const ob=bucketOf(t);const nb=on?on.dataset.val:ob;if(nb!==ob){if(ob==='today'&&nb!=='today'&&!t.done)t.moves=(t.moves||0)+1;setWhen(t,nb)}t.text=v;t.topicId=val('tk-topic');t.person=val('tk-person').trim();save();closeSheet();render();toast('Gespeichert.')},
+  tkDel:b=>{S.tasks=S.tasks.filter(x=>x.id!==b.dataset.id);save();closeSheet();render();toast('Aufgabe gelöscht.')},
+  tkToTopic:b=>{const t=S.tasks.find(x=>x.id===b.dataset.id);if(!t)return;closeSheet();openEditor(null,{title:t.text.slice(0,140),owner:t.person||''},null,t.id)},
+  tkDelegate:b=>{const t=S.tasks.find(x=>x.id===b.dataset.id);if(!t)return;const tp=t.topicId?S.topics.find(x=>x.id===t.topicId&&!x.archived):null;sheet('<h2>Delegieren</h2><p class="im">'+esc(t.text)+'</p><label>An wen?<input type="text" id="dg-person" list="dg-plist" value="'+esc(t.person||'')+'" autocomplete="off" data-focus></label><datalist id="dg-plist">'+personNames().map(n=>'<option value="'+esc(n)+'">').join('')+'</datalist><fieldset><legend>Wie hältst du nach?</legend><label class="chk"><input type="radio" name="dg-mode" value="point" checked><span>Als Gesprächspunkt fürs nächste 1:1</span></label><label class="chk"><input type="radio" name="dg-mode" value="topic"><span>'+(tp?'Am Thema „'+esc(tp.title)+'“ in '+FOLLOW_DAYS+' Tagen nachfassen':'Als Thema mit Nachfassen in '+FOLLOW_DAYS+' Tagen')+'</span></label></fieldset><div class="sheet-acts"><button class="btn pri" data-act="dgSave" data-id="'+t.id+'">Delegieren</button><button class="btn ghost" data-act="close">Abbrechen</button></div>')},
+  dgSave:b=>{const t=S.tasks.find(x=>x.id===b.dataset.id);if(!t)return;const p=val('dg-person').trim();if(!p){toast('Gib an, an wen du delegierst.');return}if(p==='__proto__'||p==='constructor'){toast('Dieser Name ist nicht möglich.');return}const m=document.querySelector('input[name="dg-mode"]:checked');const mode=m?m.value:'point';const now=Date.now();const tp=t.topicId?S.topics.find(x=>x.id===t.topicId&&!x.archived):null;
+    if(mode==='point'){ensurePerson(p).points.push({id:uid(),text:t.text+(tp?' ('+tp.title+')':''),at:now,done:false})}
+    else if(tp){tp.waiting='others';tp.waitNote=p+': '+t.text;tp.followUp=shiftIso(today(),FOLLOW_DAYS);tp.updatedAt=now}
+    else{const own=S.topics.find(x=>x.owner===p);S.topics.push({id:uid(),title:t.text.slice(0,140),team:own?own.team:S.teams[0],owner:p,goal:'',status:'g',next:'',due:'',deadline:'',remind:3,followUp:shiftIso(today(),FOLLOW_DAYS),goalId:'',waiting:'others',waitNote:p,notes:'Delegiert am '+fmt(today()),created:now,progressAt:now,updatedAt:now,archived:false})}
+    S.tasks=S.tasks.filter(x=>x.id!==t.id);save();closeSheet();render();toast('An '+p+' delegiert.')},
+  dayStart:()=>{const c=inBucket('today').concat(inBucket('week'));if(!c.length){toast('Keine offenen Aufgaben für heute oder diese Woche.');return}const pre=mustTasks().map(t=>t.id);sheet('<h2>Tag starten</h2><p class="im">Wähle bis zu fünf Pflichtaufgaben. Die übrigen Aufgaben von heute wandern nach „Diese Woche“.</p><div>'+c.map(t=>'<label class="chk"><input type="checkbox" class="mchk" value="'+t.id+'"'+(pre.includes(t.id)?' checked':'')+'><span>'+esc(t.text)+'<br><span class="im">'+(bucketOf(t)==='today'?(t.when<today()?'übrig seit '+fmt(t.when):'heute'):'diese Woche')+((t.moves||0)>=3?', '+t.moves+'-mal verschoben':'')+'</span></span></label>').join('')+'</div><div class="sheet-acts" style="margin-top:12px"><button class="btn pri" data-act="dayStartSave">Tag starten</button><button class="btn ghost" data-act="close">Abbrechen</button></div>')},
+  dayStartSave:()=>{const ids=[...document.querySelectorAll('.mchk:checked')].map(x=>x.value).slice(0,5);S.tasks.forEach(t=>{if(t.done)return;if(ids.includes(t.id)){if(bucketOf(t)!=='today'||t.when<today())setWhen(t,'today')}else if(bucketOf(t)==='today'){setWhen(t,'week')}});S.day={date:today(),must:ids,closed:false};save();closeSheet();render();toast(ids.length?'Los geht’s: '+ids.length+(ids.length===1?' Pflichtaufgabe.':' Pflichtaufgaben.'):'Tag gestartet.')},
+  dayClose:()=>{const open=inBucket('today');if(!open.length){S.day=Object.assign(dayStarted()?S.day:{date:today(),must:[]},{closed:true});save();render();toast('Alles erledigt. Schönen Feierabend.');return}sheet('<h2>Tag abschließen</h2><p class="im">Entscheide für jede offene Aufgabe: erledigt, auf morgen oder streichen.</p>'+open.map(t=>'<div class="dcrow"><span>'+esc(t.text)+((t.moves||0)>=2?' <span class="tag stale">'+(t.moves||0)+'-mal verschoben</span>':'')+'</span><div class="seg seg3s" data-id="'+t.id+'">'+[['done','Erledigt'],['tomorrow','Morgen'],['drop','Streichen']].map(o=>'<button type="button" class="segb nod'+(o[0]==='tomorrow'?' on':'')+'" data-act="seg" data-val="'+o[0]+'">'+o[1]+'</button>').join('')+'</div></div>').join('')+'<div class="sheet-acts" style="margin-top:14px"><button class="btn pri" data-act="dayCloseSave">Tag abschließen</button><button class="btn ghost" data-act="close">Abbrechen</button></div>')},
+  dayCloseSave:()=>{let n=0;document.querySelectorAll('.seg3s').forEach(g=>{const t=S.tasks.find(x=>x.id===g.dataset.id);if(!t)return;const on=g.querySelector('.on');const v=on?on.dataset.val:'tomorrow';if(v==='done'){t.done=true;t.doneAt=Date.now()}else if(v==='drop'){S.tasks=S.tasks.filter(x=>x.id!==t.id)}else{setWhen(t,'tomorrow');t.moves=(t.moves||0)+1;n++}});S.day=Object.assign(dayStarted()?S.day:{date:today(),must:[]},{closed:true});save();closeSheet();render();toast(n?n+(n===1?' Aufgabe':' Aufgaben')+' auf morgen verschoben. Schönen Feierabend.':'Tag abgeschlossen. Schönen Feierabend.')},
+  mtPost:()=>{sheet('<h2>Meeting nachbereiten</h2><label>Termin (optional)<input type="text" id="mp-title" placeholder="z. B. Abstimmung Rollout" data-focus></label><label>Gehört zu Thema (optional)<select id="mp-topic"><option value="">Kein Thema</option>'+active().sort((x,y)=>x.title.localeCompare(y.title,'de')).map(x=>'<option value="'+x.id+'">'+esc(x.title)+'</option>').join('')+'</select></label><label>Meine Aufgaben und Zusagen<textarea id="mp-mine" rows="4" placeholder="Eine pro Zeile"></textarea></label><label>Fällig<select id="mp-when"><option value="today">Heute</option><option value="tomorrow">Morgen</option><option value="week" selected>Diese Woche</option></select></label><label>Zusagen anderer<textarea id="mp-others" rows="4" placeholder="Name: Zusage, eine pro Zeile"></textarea></label><p class="im" style="margin:-6px 0 14px">Für jede Zusage legt die App eine Nachfass-Aufgabe in '+FOLLOW_DAYS+' Tagen an. Steht ein Name davor, kommt die Zusage außerdem als Punkt ins nächste 1:1.</p><label>Notiz (optional)<textarea id="mp-note" rows="3" placeholder="Ergebnisse, Eindrücke"></textarea></label><div class="sheet-acts"><button class="btn pri" data-act="mpSave">Übernehmen</button><button class="btn ghost" data-act="close">Abbrechen</button></div>')},
+  mpSave:()=>{const title=val('mp-title').trim(),tid=val('mp-topic'),mine=lines(val('mp-mine')),oth=lines(val('mp-others')),note=val('mp-note').trim(),wb=val('mp-when')||'week';if(!mine.length&&!oth.length&&!note){toast('Trag mindestens eine Aufgabe, Zusage oder Notiz ein.');return}const src=title?' („'+title+'“)':'';let n=0;
+    mine.forEach(l=>{newTask(l,wb,{topicId:tid});n++});
+    oth.forEach(l=>{const i=l.indexOf(':');let p='',x=l;if(i>0&&i<=40){p=l.slice(0,i).trim();x=l.slice(i+1).trim()||l}if(p==='__proto__'||p==='constructor')p='';const k=newTask(p?'Nachfassen bei '+p+': '+x:'Nachfassen: '+x,'later',{topicId:tid,person:p});k.when=shiftIso(today(),FOLLOW_DAYS);k.flex=false;n++;if(p)ensurePerson(p).points.push({id:uid(),text:'Zusage'+src+': '+x,at:Date.now(),done:false})});
+    if(note){const tp=tid?S.topics.find(x=>x.id===tid):null;const entry=fmt(today())+' Meeting'+(title?' „'+title+'“':'')+': '+note;if(tp){tp.notes=(tp.notes?tp.notes.trimEnd()+String.fromCharCode(10):'')+entry;tp.updatedAt=Date.now()}else S.inbox.push({id:uid(),text:entry,at:Date.now()})}
+    save();closeSheet();render();toast(n?n+(n===1?' Aufgabe angelegt.':' Aufgaben angelegt.'):'Notiz gespeichert.')},
+  qTask:b=>{const ls=lines(val('q-text'));if(!ls.length){toast('Trag zuerst etwas ein.');return}ls.forEach(l=>newTask(l,b.dataset.b));save();closeSheet();render();toast(ls.length===1?'Aufgabe angelegt.':ls.length+' Aufgaben angelegt.')},
+  noteTask:b=>{const n=S.inbox.find(x=>x.id===b.dataset.id);if(!n)return;newTask(lines(n.text).join(' '),'today');S.inbox=S.inbox.filter(x=>x.id!==n.id);save();render();toast('Als Aufgabe für heute angelegt.')},
+  nextToTask:()=>{if(!edit||!edit.id){toast('Speichere das Thema zuerst.');return}const nx=val('f-next').trim();if(!nx){toast('Trag zuerst einen nächsten Schritt ein.');return}if(S.tasks.some(k=>!k.done&&k.topicId===edit.id&&k.text===nx)){toast('Ist schon als Aufgabe angelegt.');return}newTask(nx,'today',{topicId:edit.id});save();toast('Als Aufgabe für heute angelegt.')},
+  recList:()=>{const L=S.recurring||[];sheet('<h2>Wiederkehrende Aufgaben</h2><p class="im">Sie erscheinen am jeweiligen Tag automatisch unter „Heute“.</p>'+(L.length?'<div class="pts">'+L.map(r=>'<div class="pt"><button class="tkb" data-act="recEdit" data-id="'+r.id+'"><span class="tkt">'+esc(r.text)+'</span><span class="im">'+ruleText(r)+'</span></button></div>').join('')+'</div>':'<p class="calm">Noch keine wiederkehrenden Aufgaben.</p>')+'<div class="sheet-acts" style="margin-top:14px"><button class="btn pri" data-act="recEdit">Neue anlegen</button><button class="btn ghost" data-act="close">Schließen</button></div>')},
+  recEdit:b=>{const id=b.dataset.id||'',from=b.dataset.from||'';const ft=from?S.tasks.find(x=>x.id===from):null;const r=id?(S.recurring||[]).find(x=>x.id===id):{text:ft?ft.text:'',freq:'weekly',weekday:isoDow(today()),monthday:+today().slice(8),interval:2,unit:'day',start:today(),days:[isoDow(today())],topicId:ft?ft.topicId||'':'',person:ft?ft.person||'':''};if(!r)return;
+    sheet('<h2>'+(id?'Wiederkehrende Aufgabe':'Neue wiederkehrende Aufgabe')+'</h2><label>Aufgabe<input type="text" id="rr-text" value="'+esc(r.text)+'" placeholder="z. B. Wochenbericht vorbereiten"'+(id||from?'':' data-focus')+'></label><label>Rhythmus<select id="rr-freq">'+Object.keys(FREQ).map(k=>'<option value="'+k+'"'+(r.freq===k?' selected':'')+'>'+FREQ[k]+'</option>').join('')+'</select></label><label id="rr-wd-wrap"'+(r.freq==='weekly'?'':' hidden')+'>Wochentag<select id="rr-wd">'+WD.map((w,i)=>'<option value="'+(i+1)+'"'+((+r.weekday||1)===i+1?' selected':'')+'>'+w+'</option>').join('')+'</select></label><label id="rr-md-wrap"'+(r.freq==='monthly'?'':' hidden')+'>Tag im Monat<select id="rr-md">'+Array.from({length:31},(_,i)=>'<option value="'+(i+1)+'"'+((+r.monthday||1)===i+1?' selected':'')+'>'+(i+1)+'.</option>').join('')+'</select></label><div id="rr-cu-wrap"'+(r.freq==='custom'?'':' hidden')+'><div class="cu-row"><label>Alle<input type="number" id="rr-n" min="1" max="99" inputmode="numeric" value="'+(+r.interval||2)+'"></label><label>Einheit<select id="rr-unit">'+[['day','Tage'],['week','Wochen'],['month','Monate']].map(u=>'<option value="'+u[0]+'"'+((r.unit||'day')===u[0]?' selected':'')+'>'+u[1]+'</option>').join('')+'</select></label></div><label>Beginnt am<input type="date" id="rr-start" value="'+esc(r.start||today())+'"></label><fieldset id="rr-days-wrap"'+((r.unit||'day')==='week'?'':' hidden')+'><legend>An diesen Tagen</legend><div class="wdays">'+WD.map((w,i)=>'<label class="wday"><input type="checkbox" class="rr-day" value="'+(i+1)+'"'+(ruleDays(r).includes(i+1)?' checked':'')+'><span>'+w.slice(0,2)+'</span></label>').join('')+'</div></fieldset><p class="im" style="margin:-4px 0 14px">Bei Monaten zählt der Tag des Startdatums.</p></div><label>Gehört zu Thema (optional)<select id="rr-topic"><option value="">Kein Thema</option>'+active().sort((x,y)=>x.title.localeCompare(y.title,'de')).map(x=>'<option value="'+x.id+'"'+(x.id===r.topicId?' selected':'')+'>'+esc(x.title)+'</option>').join('')+'</select></label><label>Person (optional)<input type="text" id="rr-person" list="rr-plist" value="'+esc(r.person||'')+'" autocomplete="off"></label><datalist id="rr-plist">'+personNames().map(n=>'<option value="'+esc(n)+'">').join('')+'</datalist><p class="im" style="margin:-4px 0 14px">Ist die letzte Aufgabe noch offen, kommt keine zweite dazu. Bei „Monatlich am 31.“ nimmt die App in kürzeren Monaten den letzten Tag.</p><div class="sheet-acts"><button class="btn pri" data-act="recSave" data-id="'+id+'" data-from="'+from+'">Speichern</button><button class="btn ghost" data-act="'+(from?'close':'recList')+'">'+(from?'Abbrechen':'Zurück')+'</button></div>'+(id?'<div class="danger"><button class="btn sm ghost red" data-act="recDel" data-id="'+id+'">Wiederholung beenden</button></div>':''))},
+  recSave:b=>{const text=val('rr-text').trim();if(!text){toast('Gib der Aufgabe einen Text.');return}const id=b.dataset.id,from=b.dataset.from;const d={text:text,freq:val('rr-freq'),weekday:+val('rr-wd'),monthday:+val('rr-md'),topicId:val('rr-topic'),person:val('rr-person').trim(),interval:Math.max(1,Math.min(99,parseInt(val('rr-n'),10)||1)),unit:val('rr-unit')||'day',start:val('rr-start')||today(),days:[...document.querySelectorAll('.rr-day:checked')].map(x=>+x.value)};if(d.unit==='week'&&!d.days.length)d.days=[isoDow(d.start)];S.recurring=S.recurring||[];let r;
+    if(id){r=S.recurring.find(x=>x.id===id);if(!r)return;const changed=r.freq!==d.freq||r.weekday!==d.weekday||r.monthday!==d.monthday||r.interval!==d.interval||r.unit!==d.unit||r.start!==d.start||String(r.days)!==String(d.days);Object.assign(r,d);if(changed){const o=lastOcc(r);r.lastGen=o===today()?'':o}}
+    else{r=Object.assign({id:uid()},d);const o=lastOcc(r);r.lastGen=o===today()?'':o;S.recurring.push(r)}
+    if(from){const t=S.tasks.find(x=>x.id===from);if(t)t.ruleId=r.id}
+    genRecurring();save();if(from)closeSheet();else A.recList();render();toast(ruleText(r)+': gespeichert.')},
+  recDel:b=>{S.recurring=(S.recurring||[]).filter(x=>x.id!==b.dataset.id);save();A.recList();render();toast('Wiederholung beendet. Offene Aufgaben bleiben stehen.')},
+  search:()=>sheet('<h2>Suche</h2><input type="search" id="sr-q" placeholder="Thema, Person, Stichwort" autocomplete="off" aria-label="Suchbegriff" data-focus><div id="sr-res" style="margin-top:12px">'+searchHtml('')+'</div><button class="btn ghost wide" data-act="close" style="margin-top:16px">Schließen</button>'),
+  srOpen:b=>{const k=b.dataset.k;if(k==='t'){openEditor(b.dataset.id)}else if(k==='k'){A.tkOpen(b)}else if(k==='p'){closeSheet();personSel=b.dataset.name;go('personen')}else{closeSheet();go('inbox')}},
+  personGo:b=>{personSel=b.dataset.name;go('personen')},
   export:()=>doExport(),
   copyExp:()=>{const ta=$('#exp-text');if(!ta)return;const done=()=>toast('Kopiert.');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(done,()=>{ta.focus();ta.select();toast('Text ist markiert. Tippe auf Kopieren.')})}else{ta.focus();ta.select();toast('Text ist markiert. Tippe auf Kopieren.')}},
   impText:()=>{const t=val('imp-text').trim();if(!t){toast('Füge zuerst den Text der Sicherung ein.');return}importText(t)},
@@ -706,12 +864,18 @@ document.addEventListener('change',e=>{
   if(tg&&(tg.id==='f-wait'||tg.id==='r-wait')&&tg.value==='others'){const f=document.getElementById(tg.id==='f-wait'?'f-follow':'r-follow');if(f&&!f.value){f.value=shiftIso(today(),FOLLOW_DAYS);toast('Nachfass-Datum in '+FOLLOW_DAYS+' Tagen vorgeschlagen.')}}
   if(tg&&(tg.id==='rep-team'||tg.id==='rep-names')){const r=$('#rep-text');const c=$('#rep-names');if(r)r.value=buildReport(val('rep-team'),!!(c&&c.checked))}
   if(tg&&tg.classList&&tg.classList.contains('fchk')&&tg.checked&&document.querySelectorAll('.fchk:checked').length>3){tg.checked=false;toast('Höchstens drei Themen pro Woche.')}
+  if(tg&&tg.classList&&tg.classList.contains('mchk')&&tg.checked&&document.querySelectorAll('.mchk:checked').length>5){tg.checked=false;toast('Höchstens fünf Pflichtaufgaben.')}
+  if(tg&&tg.id==='rr-freq'){const w=$('#rr-wd-wrap'),m=$('#rr-md-wrap'),cu=$('#rr-cu-wrap');if(w)w.hidden=tg.value!=='weekly';if(m)m.hidden=tg.value!=='monthly';if(cu)cu.hidden=tg.value!=='custom'}
+  if(tg&&tg.id==='rr-unit'){const dw=$('#rr-days-wrap');if(dw)dw.hidden=tg.value!=='week'}
+  if(tg&&tg.id==='pr-rhythm'&&personSel){const p=ensurePerson(personSel);const v=+tg.value||0;if(v&&!p.rhythm)p.rhythmSince=Date.now();p.rhythm=v;save();render();toast(v?'Rhythmus: '+rhyLabel(v)+'.':'Kein fester Rhythmus.')}
+  if(tg&&tg.id==='pr-role'&&personSel){ensurePerson(personSel).role=tg.value.trim();save()}
   if(e.target&&e.target.id==='imp-file'){
     const file=e.target.files&&e.target.files[0];if(!file)return;
     const r=new FileReader();r.onload=()=>importText(String(r.result));r.onerror=()=>toast('Die Datei konnte nicht gelesen werden.');r.readAsText(file);e.target.value='';
   }
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet();if(e.key==='Enter'&&e.target&&e.target.id==='pt-new'){e.preventDefault();A.ptAdd()}});
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='sr-q'){const r=$('#sr-res');if(r)r.innerHTML=searchHtml(e.target.value)}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet();if(e.key==='Enter'&&e.target&&e.target.id==='pt-new'){e.preventDefault();A.ptAdd()}if(e.key==='Enter'&&e.target&&e.target.id==='tk-new'){e.preventDefault();A.tkAdd()}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&$('#sheet').hidden&&view!=='review')render()});
 
 if('serviceWorker' in navigator&&window.self===window.top&&location.protocol==='https:'){
